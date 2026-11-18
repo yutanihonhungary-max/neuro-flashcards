@@ -2,6 +2,8 @@
 
 脳解剖学(Signorelli 教授)口頭試験の単語帳アプリ。
 
+- 両方のホーム画面上部に「章別 / Day別」の切り替えボタン(2026-11-18)
+
 ## 公開先
 
 - 章別版:https://yutanihonhungary-max.github.io/neuro-flashcards/

@@ -117,10 +117,14 @@ summary::-webkit-details-marker{display:none}
 .show{grid-column:1/-1;background:var(--violet);border-color:var(--violet)!important;color:var(--surface)}
 .toast{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);border-radius:10px;padding:10px 14px;font-size:.92rem;font-weight:700}
 @media (prefers-reduced-motion: reduce){.fill{transition:none}}
+.switch{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;align-self:flex-start}
+.switch a{padding:6px 16px;border-radius:999px;font-size:.9rem;color:var(--muted);text-decoration:none;font-weight:600}
+.switch a[aria-current="page"]{background:var(--violet-soft);color:var(--violet)}
 </style>
 </head>
 <body>
 <main class="wrap" id="home">
+  <nav class="switch" aria-label="版の切り替え"><a href="../">章別</a><a href="./" aria-current="page">Day別</a></nav>
   <h1>脳解剖学 単語帳 Day別</h1>
   <p class="lede">Signorelli 口頭試験の一問一答 <span id="total"></span> 枚。21日の学習ルートの順です。各Dayは「① 読む → ② 用語 → ③ 部品 → ④ まとめ」の順に進めると、知らない答えに出会わずに積み上げられます。分かったカードは外れ、分からなかったカードは後ろへ回ります。</p>
   <div class="opts">
