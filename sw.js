@@ -1,7 +1,9 @@
 // Network first, cache fallback: always the newest cards when online, still opens offline.
-const CACHE = 'neuro-flashcards-v1';
+const CACHE = 'neuro-flashcards-v2';
 const CORE = ['./', './index.html', './day/', './day/index.html', './manifest.webmanifest', './day/manifest.webmanifest',
-  './icons/icon-192.png', './icons/icon-day-192.png'];
+  './icons/icon-192.png', './icons/icon-day-192.png',
+  './img/brainstem-cranial-nerve-nuclei.png', './img/levator-palpebrae-superioris-lateral.jpg',
+  './img/levator-palpebrae-superioris-tarsal-plate.jpg', './img/extraocular-muscles.jpg'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
 });

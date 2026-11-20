@@ -39,7 +39,7 @@ def rep(o,n,cnt=1):
 # ---- copy
 rep('21日の学習ルートの順に並んでいます。その日のDayを開いて始めてください。','21日の学習ルートの順です。各Dayは「① 読む → ② 用語 → ③ 部品 → ④ まとめ」の順に進めると、知らない答えに出会わずに積み上げられます。')
 # ---- css
-rep('.unit.all{','.step{display:flex;align-items:center;gap:10px}\n.step .sn{width:22px;height:22px;border-radius:50%;background:var(--violet-soft);color:var(--violet);font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}\n.unit .sub{display:block;font-size:.75rem;color:var(--muted);font-weight:400}\n.minor{font-size:.78rem;color:var(--muted);padding:6px 4px 0}\n.unit.small{padding:7px 12px;font-size:.88rem}\n.reader{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 20px;display:flex;flex-direction:column;gap:12px;overflow-wrap:anywhere}\n.reader h2{font-family:var(--display);font-size:1.25rem;line-height:1.45;margin:0;text-wrap:balance}\n.reader p{margin:0;font-size:1rem;line-height:1.85}\n.reader ul,.reader ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px;line-height:1.75}\n.pdone{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}\n.pdone input{width:24px;height:24px;accent-color:var(--ok);margin:0;flex:none;cursor:pointer}\n.pdone.on{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}\n.rnav{display:grid;grid-template-columns:1fr 2fr;gap:10px;position:sticky;bottom:0;background:var(--paper);padding:10px 0 12px;margin-bottom:-12px}\n.rnav button{border-radius:12px;padding:14px 8px;font-weight:700;border:2px solid var(--violet);background:var(--surface);color:var(--violet)}\n.rnav button.go{background:var(--violet);color:var(--surface)}\n.rnav button:disabled{opacity:.35}\n.unit.all{')
+rep('.unit.all{','.step{display:flex;align-items:center;gap:10px}\n.step .sn{width:22px;height:22px;border-radius:50%;background:var(--violet-soft);color:var(--violet);font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}\n.unit .sub{display:block;font-size:.75rem;color:var(--muted);font-weight:400}\n.minor{font-size:.78rem;color:var(--muted);padding:6px 4px 0}\n.unit.small{padding:7px 12px;font-size:.88rem}\n.reader{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 20px;display:flex;flex-direction:column;gap:12px;overflow-wrap:anywhere}\n.reader h2{font-family:var(--display);font-size:1.25rem;line-height:1.45;margin:0;text-wrap:balance}\n.reader p{margin:0;font-size:1rem;line-height:1.85}\n.reader ul,.reader ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px;line-height:1.75}\n.reader figure{margin:2px 0;display:flex;flex-direction:column;gap:6px}\n.reader figure img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line);background:#fff}\n.reader figcaption{font-size:.8rem;color:var(--muted);line-height:1.5}\n.pdone{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}\n.pdone input{width:24px;height:24px;accent-color:var(--ok);margin:0;flex:none;cursor:pointer}\n.pdone.on{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}\n.rnav{display:grid;grid-template-columns:1fr 2fr;gap:10px;position:sticky;bottom:0;background:var(--paper);padding:10px 0 12px;margin-bottom:-12px}\n.rnav button{border-radius:12px;padding:14px 8px;font-weight:700;border:2px solid var(--violet);background:var(--surface);color:var(--violet)}\n.rnav button.go{background:var(--violet);color:var(--surface)}\n.rnav button:disabled{opacity:.35}\n.unit.all{')
 # ---- reader view markup
 rep('<main class="wrap" id="study" hidden>','''<main class="wrap" id="read" hidden>
   <div class="bar">
@@ -94,25 +94,31 @@ rep("(si==null?(DECKS[ci].from?'通し':'新規'):si==='rev'?'復習':DECKS[ci].
 # reader logic
 rep("$('card').addEventListener('click',flip);",r'''let rd={ci:0,p:0};
 const PG_KEY='neuro-done-pages';
-function loadPg(){try{return JSON.parse(localStorage.getItem(PG_KEY)||'{}')||{};}catch(e){return {};}}
+function pk(ci,i){return ci+':'+DECKS[ci].lesson[i].h;}
+function loadPg(){let S;try{S=JSON.parse(localStorage.getItem(PG_KEY)||'{}')||{};}catch(e){return {};}
+  let mig=false;Object.keys(S).forEach(k=>{const m=k.match(/^(\d+)-(\d+)$/);if(!m)return;mig=true;delete S[k];
+    let ci=+m[1],i=+m[2];if((ci===0&&i>=14)||(ci===1&&i>=2))i++;if(DECKS[ci]&&DECKS[ci].lesson&&DECKS[ci].lesson[i])S[pk(ci,i)]=1;});
+  if(mig)savePg(S);return S;}
 function savePg(S){try{localStorage.setItem(PG_KEY,JSON.stringify(S));}catch(e){}}
-function pagesDone(ci){const S=loadPg(),L=DECKS[ci].lesson||[];return L.filter((_,i)=>S[ci+'-'+i]).length;}
+function pagesDone(ci){const S=loadPg(),L=DECKS[ci].lesson||[];return L.filter((_,i)=>S[pk(ci,i)]).length;}
 function pagesLabel(ci){const n=DECKS[ci].lesson.length,c=pagesDone(ci);return c?'✓'+c+'/'+n+' ページ':n+' ページ';}
-function openReader(ci){const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[ci+'-'+i]);rd={ci,p:f<0?0:f};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
+function openReader(ci){const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[pk(ci,i)]);rd={ci,p:f<0?0:f};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
   $('home').hidden=true;$('read').hidden=false;renderPage();}
 function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');box.textContent='';
   const h2=document.createElement('h2');h2.textContent=pg.h;box.append(h2);let list=null,kind='';
   pg.b.forEach(line=>{let m;
+    if((m=line.match(/^!img\s+(\S+)\s*\|\s*(.*)$/))){kind='';const f=document.createElement('figure');const a=document.createElement('a');a.href='../img/'+m[1];a.target='_blank';a.rel='noopener';
+      const im=document.createElement('img');im.src='../img/'+m[1];im.alt=m[2];im.loading='lazy';a.append(im);const fc=document.createElement('figcaption');fc.textContent=m[2];f.append(a,fc);box.append(f);return;}
     if((m=line.match(/^-\s+(.*)$/))){if(kind!=='ul'){list=document.createElement('ul');box.append(list);kind='ul';}const li=document.createElement('li');li.textContent=m[1];list.append(li);}
     else if((m=line.match(/^\d+\.\s+(.*)$/))){if(kind!=='ol'){list=document.createElement('ol');box.append(list);kind='ol';}const li=document.createElement('li');li.textContent=m[1];list.append(li);}
     else{kind='';const p=document.createElement('p');p.textContent=line;box.append(p);}});
-  const done=!!loadPg()[rd.ci+'-'+rd.p];$('pdone').checked=done;$('pdoneBox').classList.toggle('on',done);
+  const done=!!loadPg()[pk(rd.ci,rd.p)];$('pdone').checked=done;$('pdoneBox').classList.toggle('on',done);
   $('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');$('rFill').style.width=((rd.p+1)/L.length*100)+'%';
   $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?'② 用語へ進む →':'次へ →';window.scrollTo(0,0);}
 $('rPrev').addEventListener('click',()=>{if(rd.p>0){rd.p--;renderPage();}});
 $('rNext').addEventListener('click',()=>{const L=DECKS[rd.ci].lesson;if(rd.p<L.length-1){rd.p++;renderPage();}else{$('read').hidden=true;start(rd.ci,'term');}});
 $('rBack').addEventListener('click',()=>{$('read').hidden=true;$('home').hidden=false;renderHome();});
-$('pdone').addEventListener('change',e=>{const S=loadPg(),k=rd.ci+'-'+rd.p;if(e.target.checked)S[k]=1;else delete S[k];savePg(S);
+$('pdone').addEventListener('change',e=>{const S=loadPg(),k=pk(rd.ci,rd.p);if(e.target.checked)S[k]=1;else delete S[k];savePg(S);
   $('pdoneBox').classList.toggle('on',e.target.checked);const L=DECKS[rd.ci].lesson;$('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');});
 $('card').addEventListener('click',flip);''')
 open(ROOT/'day'/'index.html','w',encoding='utf-8').write(h)
