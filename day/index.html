@@ -120,6 +120,13 @@ summary::-webkit-details-marker{display:none}
 .switch{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;align-self:flex-start}
 .switch a{padding:6px 16px;border-radius:999px;font-size:.9rem;color:var(--muted);text-decoration:none;font-weight:600}
 .switch a[aria-current="page"]{background:var(--violet-soft);color:var(--violet)}
+.urow{display:flex;align-items:center;gap:6px}
+.urow .unit{flex:1;min-width:0}
+.chk{flex:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;margin:-4px -4px -4px -6px;cursor:pointer}
+.chk input{width:22px;height:22px;accent-color:var(--ok);margin:0;cursor:pointer}
+.urow.done .unit{opacity:.5}
+.prog{font-size:.78rem;font-weight:700;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+details.done .prog,details.done .num{color:var(--ok)}
 </style>
 </head>
 <body>
@@ -230,7 +237,29 @@ function renderHome(){
     det.appendChild(units); box.appendChild(det);
   });
   $('total').textContent=total;
+  addChecks();
 }
+const DONE_KEY='neuro-done-day';
+function addChecks(){
+  const D=loadDone();
+  document.querySelectorAll('#chapters details').forEach((det,ci)=>{
+    const btns=[...det.querySelectorAll('.units .unit')]; let n=0,k=0;
+    btns.forEach((b,bi)=>{
+      const id=ci+'-'+bi, row=document.createElement('div'); row.className='urow';
+      const lab=document.createElement('label'); lab.className='chk';
+      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!D[id];
+      cb.setAttribute('aria-label',b.firstChild.textContent.replace(/^\d/,'')+' 終わった');
+      cb.addEventListener('change',()=>{const S=loadDone(); if(cb.checked)S[id]=1; else delete S[id]; saveDone(S); row.classList.toggle('done',cb.checked); prog();});
+      lab.appendChild(cb); b.replaceWith(row); row.append(lab,b); row.classList.toggle('done',cb.checked);
+    });
+    const sum=det.querySelector('summary'), p=document.createElement('span'); p.className='prog'; sum.insertBefore(p,sum.lastChild);
+    function prog(){const cs=[...det.querySelectorAll('.chk input')], c=cs.filter(x=>x.checked).length;
+      p.textContent=c?'✓ '+c+'/'+cs.length:''; det.classList.toggle('done',c>0&&c===cs.length);}
+    prog();
+  });
+}
+function loadDone(){try{return JSON.parse(localStorage.getItem(DONE_KEY)||'{}')||{};}catch(e){return {};}}
+function saveDone(S){try{localStorage.setItem(DONE_KEY,JSON.stringify(S));}catch(e){}}
 function mix(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function start(ci,si){
   full=cardsOf(ci,si); if(!full.length) return;
