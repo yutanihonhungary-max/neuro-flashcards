@@ -160,6 +160,7 @@ details.done .prog,details.done .num{color:var(--ok)}
 .resume small{color:var(--muted);font-size:.82rem}
 .unit.inprog .count{color:var(--violet);font-weight:700}
 .restart{background:none;border:none;color:var(--muted);font-size:.8rem;text-decoration:underline;cursor:pointer;padding:0}
+#read{box-sizing:border-box;height:100vh;height:100dvh;overflow:hidden;padding-bottom:10px;gap:10px}#read .reader{flex:1 1 auto;min-height:0;overflow:hidden;padding:0;gap:0}#read .rtext{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:20px 18px 18px}#read .dock{position:static;margin:0;padding:10px 12px 8px;border-bottom:1px solid var(--line);flex:none}#read .dimg{height:clamp(130px,30dvh,340px)}#read .rnav{position:static;margin:0;padding:0;flex:none}#read .rtext .pdone{margin-top:8px}@media (min-width:1000px){#read.hasfig .reader{flex-direction:row;align-items:stretch;padding:0}#read.hasfig .dock{position:static;flex:0 0 calc(var(--figr) * (100% - 22px));display:flex;flex-direction:column;padding:18px 0 14px 20px;border-bottom:none;box-sizing:border-box;min-height:0}#read.hasfig .dimg{flex:1 1 auto;height:auto;min-height:0}#read.hasfig .splitter .grip{position:absolute;top:calc(50% - 22px);left:5px;margin:0}#read.hasfig .rtext{padding:20px 24px 18px 8px}#read.hasfig .rtext .pdone{width:auto;margin:8px 0 0}#read.hasfig .rnav{width:calc((1 - var(--figr)) * (100% - 22px));margin:0 0 0 auto}}
 </style>
 </head>
 <body>
@@ -414,7 +415,7 @@ function splitBind(){const sp=$('splitter');if(!sp)return;splitSet(splitGet(),fa
     sp.addEventListener('pointermove',mv);sp.addEventListener('pointerup',up);});
   sp.addEventListener('dblclick',()=>splitSet(0.55,true));
   sp.addEventListener('keydown',e=>{const v=splitGet();if(e.key==='ArrowLeft'){splitSet(v-0.03,true);e.preventDefault();}else if(e.key==='ArrowRight'){splitSet(v+0.03,true);e.preventDefault();}});}
-function syncDock(){if($('read').hidden||!$('dock')||!dockFigs.length)return;const line=window.innerHeight*0.6;let k=0;
+function syncDock(){if($('read').hidden||!$('dock')||!dockFigs.length)return;const rt=document.querySelector('#reader .rtext');const rc=rt.getBoundingClientRect();const line=rc.top+rc.height*0.55;let k=0;
   document.querySelectorAll('#reader .figref').forEach(el=>{if(el.getBoundingClientRect().top<line)k=+el.dataset.k;});if(k!==dockCur)dockShow(k,false);}
 let syncQ=false;window.addEventListener('scroll',()=>{if(syncQ)return;syncQ=true;requestAnimationFrame(()=>{syncQ=false;syncDock();});},{passive:true});
 function zoomOpen(k){const f=dockFigs[k];if(!f)return;$('zImg').src=f.src;$('zImg').alt=f.cap;$('zCap').textContent='図'+(k+1)+'  '+f.cap;zScale=1;zApply();$('zoom').hidden=false;document.body.style.overflow='hidden';
@@ -427,7 +428,7 @@ function loadRpos(){try{return JSON.parse(localStorage.getItem(RPOS_KEY)||'{}')|
 function openReader(ci,at){jump=null;setBackLabel();const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[pk(ci,i)]);const R=loadRpos()[ci];
   if(at==null&&R!=null){const j=L.findIndex(x=>x.h===R);if(j>=0)at=j;}rd={ci,p:at!=null&&at<L.length?at:(f<0?0:f)};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
   $('home').hidden=true;$('read').hidden=false;renderPage();}
-function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');box.textContent='';
+function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');const pdb=$('pdoneBox');box.textContent='';
   const h2=document.createElement('h2');h2.textContent=pg.h;const tx=document.createElement('div');tx.className='rtext';let list=null,kind='';const figs=[];dockFigs=figs;
   if(figObs){figObs.disconnect();figObs=null;}
   if(pg.b.some(l=>/^!img\s/.test(l))){const dk=document.createElement('div');dk.className='dock'+(dockMin()?' min':'');dk.id='dock';
@@ -444,6 +445,7 @@ function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');box
     $('dMin').textContent=dockMin()?'大きく':'小さく';$('dMin').addEventListener('click',()=>{const m=!dockMin();try{localStorage.setItem('neuro-dockmin',m?'1':'');}catch(e){}$('dock').classList.toggle('min',m);$('dMin').textContent=m?'大きく':'小さく';});
     $('dZoom').addEventListener('click',()=>zoomOpen(dockCur));$('dImg').addEventListener('click',()=>zoomOpen(dockCur));dockShow(0,false);
     splitBind();requestAnimationFrame(syncDock);}
+  tx.append(pdb);tx.addEventListener('scroll',()=>{if(syncQ)return;syncQ=true;requestAnimationFrame(()=>{syncQ=false;syncDock();});},{passive:true});
   const done=!!loadPg()[pk(rd.ci,rd.p)];$('pdone').checked=done;$('pdoneBox').classList.toggle('on',done);
   $('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');$('rFill').style.width=((rd.p+1)/L.length*100)+'%';
   if(!jump){try{const R=loadRpos();R[rd.ci]=pg.h;localStorage.setItem(RPOS_KEY,JSON.stringify(R));}catch(e){}saveLast({type:'read',ci:rd.ci,p:rd.p,total:L.length,label:$('rTitle').textContent+' ・ ① 読む',t:Date.now()});}
