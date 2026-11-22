@@ -76,7 +76,7 @@ function cardsOf(ci,si){
   if(si==='rev_old')""")
 # ---- home units
 o=h[h.index("    mk(d.from?'通しで始める'"):h.index("    det.appendChild(units); box.appendChild(det);")]
-n='''    const mkStep=(num,label,sub,cnt,fn,cls)=>{const b=document.createElement('button');b.className='unit'+(cls?' '+cls:'');
+n='''    const mkStep=(num,label,sub,cnt,fn,cls,key)=>{const b=document.createElement('button');b.className='unit'+(cls?' '+cls:'');if(key)b.dataset.deck=key;
       const l=document.createElement('span');l.className='step';const sn=document.createElement('span');sn.className='sn';sn.textContent=num;
       const tx=document.createElement('span');tx.textContent=label;if(sub){const s=document.createElement('span');s.className='sub';s.textContent=sub;tx.append(s);}
       l.append(sn,tx);const c=document.createElement('span');c.className='count';c.textContent=cnt;b.append(l,c);b.disabled=!cnt||cnt==='0 枚';b.addEventListener('click',fn);units.appendChild(b);};
@@ -84,11 +84,11 @@ n='''    const mkStep=(num,label,sub,cnt,fn,cls)=>{const b=document.createElemen
     else{
       if(d.lesson&&d.lesson.length){
         mkStep('1','読む','この日の内容を基礎から',pagesLabel(ci),()=>openReader(ci));
-        mkStep('2','用語','言葉の意味を先に覚える',(d.terms||[]).length+' 枚',()=>start(ci,'term'));
-        mkStep('3','部品','1枚1つの事実で積み上げる',(d.facts||[]).length+' 枚',()=>start(ci,'fact'));
-        mkStep('4','まとめ','試験形式の一問一答',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'));
+        mkStep('2','用語','言葉の意味を先に覚える',(d.terms||[]).length+' 枚',()=>start(ci,'term'),null,ci+'|term');
+        mkStep('3','部品','1枚1つの事実で積み上げる',(d.facts||[]).length+' 枚',()=>start(ci,'fact'),null,ci+'|fact');
+        mkStep('4','まとめ','試験形式の一問一答',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'),null,ci+'|sum');
       } else {
-        mkStep('4','まとめ','試験形式の一問一答(読む・用語・部品は準備中)',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'));
+        mkStep('4','まとめ','試験形式の一問一答(読む・用語・部品は準備中)',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'),null,ci+'|sum');
       }
       if(d.rev.length) mk('復習:'+d.rev.map(r=>'Day '+(r+1)).join('・'),cardsOf(ci,'rev').length,'rev');
       if(d.secs.length>1){const m=document.createElement('div');m.className='minor';m.textContent='まとめを単元ごとに';units.appendChild(m);
@@ -112,7 +112,10 @@ function pagesDone(ci){const S=loadPg(),L=DECKS[ci].lesson||[];return L.filter((
 function pagesLabel(ci){const n=DECKS[ci].lesson.length,c=pagesDone(ci);return c?'✓'+c+'/'+n+' ページ':n+' ページ';}
 let jump=null;
 function setBackLabel(){$('rBack').textContent=jump?'← カードに戻る':'← 単元一覧';}
-function openReader(ci){jump=null;setBackLabel();const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[pk(ci,i)]);rd={ci,p:f<0?0:f};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
+const RPOS_KEY='neuro-readpos-day';
+function loadRpos(){try{return JSON.parse(localStorage.getItem(RPOS_KEY)||'{}')||{};}catch(e){return {};}}
+function openReader(ci,at){jump=null;setBackLabel();const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[pk(ci,i)]);const R=loadRpos()[ci];
+  if(at==null&&R!=null){const j=L.findIndex(x=>x.h===R);if(j>=0)at=j;}rd={ci,p:at!=null&&at<L.length?at:(f<0?0:f)};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
   $('home').hidden=true;$('read').hidden=false;renderPage();}
 function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');box.textContent='';
   const h2=document.createElement('h2');h2.textContent=pg.h;box.append(h2);let list=null,kind='';
@@ -124,6 +127,7 @@ function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');box
     else{kind='';const p=document.createElement('p');p.textContent=line;box.append(p);}});
   const done=!!loadPg()[pk(rd.ci,rd.p)];$('pdone').checked=done;$('pdoneBox').classList.toggle('on',done);
   $('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');$('rFill').style.width=((rd.p+1)/L.length*100)+'%';
+  if(!jump){try{const R=loadRpos();R[rd.ci]=pg.h;localStorage.setItem(RPOS_KEY,JSON.stringify(R));}catch(e){}saveLast({type:'read',ci:rd.ci,p:rd.p,total:L.length,label:$('rTitle').textContent+' ・ ① 読む',t:Date.now()});}
   $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?(jump?'カードに戻る →':'② 用語へ進む →'):'次へ →';window.scrollTo(0,0);}
 $('rPrev').addEventListener('click',()=>{if(rd.p>0){rd.p--;renderPage();}});
 $('rNext').addEventListener('click',()=>{const L=DECKS[rd.ci].lesson;if(rd.p<L.length-1){rd.p++;renderPage();}else if(jump){leaveJump();}else{$('read').hidden=true;start(rd.ci,'term');}});
