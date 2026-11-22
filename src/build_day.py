@@ -6,9 +6,12 @@ SRC=pathlib.Path(__file__).resolve().parent
 ROOT=SRC.parent
 APP=str(SRC)
 h=open(f'{APP}/day_base.html',encoding='utf-8').read()
+h=h.replace('/*ENGINE*/',open(f'{APP}/engine.js',encoding='utf-8').read().rstrip('\n'))
 a=h.index('const DECKS=')+len('const DECKS='); b=h.index(';\nconst $=')
 D=json.loads(h[a:b].replace('<\\/','</'))
 def fix(t): return t.replace('癒流','灌流').replace('娚下','嚥下')
+# 復習 = 前の全Day(Day N なら Day 1〜N-1)
+for i,d in enumerate(D): d['rev']=list(range(i))
 for d in D:
     for s in d['secs']:
         s['cards']=[c for c in s['cards'] if not c['q'].startswith('テーマ ')]
@@ -65,42 +68,6 @@ rep('<main class="wrap" id="study" hidden>','''<main class="wrap" id="read" hidd
 </main>
 <div class="zoom" id="zoom" hidden><div class="zbar"><button type="button" id="zClose">✕ 閉じる</button><span>2本指で拡大 ・ ダブルタップで2.5倍</span></div><div class="zwrap" id="zWrap"><img id="zImg" alt=""></div><p class="zcap" id="zCap"></p></div>
 <main class="wrap" id="study" hidden>''')
-# ---- cardsOf with steps
-rep("function cardsOf(ci,si){\n  const d=DECKS[ci]; let out=[];\n  if(si==='rev')","""function stepCards(ci,kind){const d=DECKS[ci];
-  if(kind==='term') return (d.terms||[]).map(c=>({q:c.q,a:c.a,s:0,sec:'② 用語'}));
-  if(kind==='fact') return (d.facts||[]).map(c=>({q:c.q,a:c.a,s:0,sec:'③ 部品',ci,pg:c.pg}));
-  return own(ci,null);}
-function revCards(r){return (DECKS[r].facts&&DECKS[r].facts.length)?stepCards(r,'fact'):own(r,null);}
-function cardsOf(ci,si){
-  const d=DECKS[ci]; let out=[];
-  if(si==='term'||si==='fact'||si==='sum'){out=stepCards(ci,si);return starOnly&&si==='sum'?out.filter(c=>c.s>0):out;}
-  if(si==='rev'){d.rev.forEach(r=>{out=out.concat(revCards(r).map(c=>({...c,sec:'Day '+(r+1)+' ・ '+c.sec})));});return starOnly?out.filter(c=>c.s>0||!c.s&&false):out;}
-  if(si==='rev_old')""")
-# ---- home units
-o=h[h.index("    mk(d.from?'通しで始める'"):h.index("    det.appendChild(units); box.appendChild(det);")]
-n='''    const mkStep=(num,label,sub,cnt,fn,cls,key)=>{const b=document.createElement('button');b.className='unit'+(cls?' '+cls:'');if(key)b.dataset.deck=key;
-      const l=document.createElement('span');l.className='step';const sn=document.createElement('span');sn.className='sn';sn.textContent=num;
-      const tx=document.createElement('span');tx.textContent=label;if(sub){const s=document.createElement('span');s.className='sub';s.textContent=sub;tx.append(s);}
-      l.append(sn,tx);const c=document.createElement('span');c.className='count';c.textContent=cnt;b.append(l,c);b.disabled=!cnt||cnt==='0 枚';b.addEventListener('click',fn);units.appendChild(b);};
-    if(d.from){ mk('通しで始める',n,null,'all'); }
-    else{
-      if(d.lesson&&d.lesson.length){
-        mkStep('1','読む','この日の内容を基礎から',pagesLabel(ci),()=>openReader(ci));
-        mkStep('2','用語','言葉の意味を先に覚える',(d.terms||[]).length+' 枚',()=>start(ci,'term'),null,ci+'|term');
-        mkStep('3','部品','1枚1つの事実で積み上げる',(d.facts||[]).length+' 枚',()=>start(ci,'fact'),null,ci+'|fact');
-        mkStep('4','まとめ','試験形式の一問一答',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'),null,ci+'|sum');
-      } else {
-        mkStep('4','まとめ','試験形式の一問一答(読む・用語・部品は準備中)',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'),null,ci+'|sum');
-      }
-      if(d.rev.length) mk('復習:'+d.rev.map(r=>'Day '+(r+1)).join('・'),cardsOf(ci,'rev').length,'rev');
-      if(d.secs.length>1){const m=document.createElement('div');m.className='minor';m.textContent='まとめを単元ごとに';units.appendChild(m);
-        d.secs.forEach((s,si)=>{mk(s.title,cardsOf(ci,si).length,si);units.lastChild.classList.add('small');});}
-    }
-'''
-h=h.replace(o,n)
-rep("n=cardsOf(ci,null).length; total+=n;","n=d.from?cardsOf(ci,null).length:(d.terms||[]).length+(d.facts||[]).length+own(ci,null).length; total+=d.from?0:n;")
-# subtitle in study header
-rep("(si==null?(DECKS[ci].from?'通し':'新規'):si==='rev'?'復習':DECKS[ci].secs[si].title)","({term:'② 用語',fact:'③ 部品',sum:'④ まとめ',rev:'復習'}[si]||(si==null?(DECKS[ci].from?'通し':'まとめ'):DECKS[ci].secs[si].title))")
 # reader logic
 rep("$('card').addEventListener('click',flip);",r'''let rd={ci:0,p:0};
 const PG_KEY='neuro-done-pages';
@@ -166,7 +133,7 @@ function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');con
 $('rPrev').addEventListener('click',()=>{if(rd.p>0){rd.p--;renderPage();}});
 $('rNext').addEventListener('click',()=>{const L=DECKS[rd.ci].lesson;if(rd.p<L.length-1){rd.p++;renderPage();}else if(jump){leaveJump();}else{$('read').hidden=true;start(rd.ci,'term');}});
 $('rBack').addEventListener('click',()=>{if(jump){leaveJump();return;}$('read').hidden=true;$('home').hidden=false;renderHome();});
-function jumpToRead(e){if(e)e.stopPropagation();const c=queue[0];if(!c||!c.pg)return;const L=DECKS[c.ci].lesson||[];const i=L.findIndex(p=>p.h===c.pg);if(i<0)return;
+function jumpToRead(e){if(e)e.stopPropagation();const c=nowCard();if(!c||!c.pg)return;const L=DECKS[c.ci].lesson||[];const i=L.findIndex(p=>p.h===c.pg);if(i<0)return;
   jump={y:window.scrollY};rd={ci:c.ci,p:i};const t=split(DECKS[c.ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';setBackLabel();
   $('study').hidden=true;$('read').hidden=false;renderPage();try{history.pushState({jump:1},'');}catch(err){}}
 function backToCard(){if(!jump)return;const y=jump.y;jump=null;setBackLabel();$('read').hidden=true;$('study').hidden=false;window.scrollTo(0,y);}
