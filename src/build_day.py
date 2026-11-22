@@ -31,6 +31,8 @@ for i,d in enumerate(D):
     p=f'{APP}/content/d{i+1:02d}.txt'
     if os.path.exists(p):
         d['lesson'],d['terms'],d['facts']=parse(p)
+import sys; sys.path.insert(0,APP); import linkmap
+print('links',dict(linkmap.assign(D)))
 data=json.dumps(D,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')
 h=h[:a]+data+h[b:]
 def rep(o,n,cnt=1):
@@ -38,6 +40,12 @@ def rep(o,n,cnt=1):
     assert o in h,o[:60]; h=h.replace(o,n,cnt)
 # ---- copy
 rep('21日の学習ルートの順に並んでいます。その日のDayを開いて始めてください。','21日の学習ルートの順です。各Dayは「① 読む → ② 用語 → ③ 部品 → ④ まとめ」の順に進めると、知らない答えに出会わずに積み上げられます。')
+# ---- links from cards to reading pages
+rep("s.cards.forEach(c=>out.push({...c,sec:s.title}));","s.cards.forEach(c=>out.push({...c,sec:s.title,ci}));")
+rep('<div class="hint" id="hint">','<button class="toread" id="toRead" type="button" hidden></button>\n    <div class="hint" id="hint">')
+rep("$('noteText').textContent=c.n||'';","$('noteText').textContent=c.n||''; $('toRead').textContent=c.pg?'📖 読むで確認:'+c.pg:'';")
+rep("$('hint').hidden=flipped;","$('hint').hidden=flipped; $('toRead').hidden=!flipped||!c.pg;")
+rep('.note{','.toread{display:block;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:.88rem;font-weight:600;color:var(--violet);cursor:pointer;line-height:1.5}\n.note{')
 # ---- css
 rep('.unit.all{','.step{display:flex;align-items:center;gap:10px}\n.step .sn{width:22px;height:22px;border-radius:50%;background:var(--violet-soft);color:var(--violet);font-size:.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}\n.unit .sub{display:block;font-size:.75rem;color:var(--muted);font-weight:400}\n.minor{font-size:.78rem;color:var(--muted);padding:6px 4px 0}\n.unit.small{padding:7px 12px;font-size:.88rem}\n.reader{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 20px;display:flex;flex-direction:column;gap:12px;overflow-wrap:anywhere}\n.reader h2{font-family:var(--display);font-size:1.25rem;line-height:1.45;margin:0;text-wrap:balance}\n.reader p{margin:0;font-size:1rem;line-height:1.85}\n.reader ul,.reader ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:4px;line-height:1.75}\n.reader figure{margin:2px 0;display:flex;flex-direction:column;gap:6px}\n.reader figure img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid var(--line);background:#fff}\n.reader figcaption{font-size:.8rem;color:var(--muted);line-height:1.5}\n.pdone{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}\n.pdone input{width:24px;height:24px;accent-color:var(--ok);margin:0;flex:none;cursor:pointer}\n.pdone.on{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}\n.rnav{display:grid;grid-template-columns:1fr 2fr;gap:10px;position:sticky;bottom:0;background:var(--paper);padding:10px 0 12px;margin-bottom:-12px}\n.rnav button{border-radius:12px;padding:14px 8px;font-weight:700;border:2px solid var(--violet);background:var(--surface);color:var(--violet)}\n.rnav button.go{background:var(--violet);color:var(--surface)}\n.rnav button:disabled{opacity:.35}\n.unit.all{')
 # ---- reader view markup
@@ -58,7 +66,7 @@ rep('<main class="wrap" id="study" hidden>','''<main class="wrap" id="read" hidd
 # ---- cardsOf with steps
 rep("function cardsOf(ci,si){\n  const d=DECKS[ci]; let out=[];\n  if(si==='rev')","""function stepCards(ci,kind){const d=DECKS[ci];
   if(kind==='term') return (d.terms||[]).map(c=>({q:c.q,a:c.a,s:0,sec:'② 用語'}));
-  if(kind==='fact') return (d.facts||[]).map(c=>({q:c.q,a:c.a,s:0,sec:'③ 部品'}));
+  if(kind==='fact') return (d.facts||[]).map(c=>({q:c.q,a:c.a,s:0,sec:'③ 部品',ci,pg:c.pg}));
   return own(ci,null);}
 function revCards(r){return (DECKS[r].facts&&DECKS[r].facts.length)?stepCards(r,'fact'):own(r,null);}
 function cardsOf(ci,si){
@@ -102,7 +110,9 @@ function loadPg(){let S;try{S=JSON.parse(localStorage.getItem(PG_KEY)||'{}')||{}
 function savePg(S){try{localStorage.setItem(PG_KEY,JSON.stringify(S));}catch(e){}}
 function pagesDone(ci){const S=loadPg(),L=DECKS[ci].lesson||[];return L.filter((_,i)=>S[pk(ci,i)]).length;}
 function pagesLabel(ci){const n=DECKS[ci].lesson.length,c=pagesDone(ci);return c?'✓'+c+'/'+n+' ページ':n+' ページ';}
-function openReader(ci){const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[pk(ci,i)]);rd={ci,p:f<0?0:f};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
+let jump=null;
+function setBackLabel(){$('rBack').textContent=jump?'← カードに戻る':'← 単元一覧';}
+function openReader(ci){jump=null;setBackLabel();const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[pk(ci,i)]);rd={ci,p:f<0?0:f};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
   $('home').hidden=true;$('read').hidden=false;renderPage();}
 function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');box.textContent='';
   const h2=document.createElement('h2');h2.textContent=pg.h;box.append(h2);let list=null,kind='';
@@ -114,10 +124,17 @@ function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');box
     else{kind='';const p=document.createElement('p');p.textContent=line;box.append(p);}});
   const done=!!loadPg()[pk(rd.ci,rd.p)];$('pdone').checked=done;$('pdoneBox').classList.toggle('on',done);
   $('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');$('rFill').style.width=((rd.p+1)/L.length*100)+'%';
-  $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?'② 用語へ進む →':'次へ →';window.scrollTo(0,0);}
+  $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?(jump?'カードに戻る →':'② 用語へ進む →'):'次へ →';window.scrollTo(0,0);}
 $('rPrev').addEventListener('click',()=>{if(rd.p>0){rd.p--;renderPage();}});
-$('rNext').addEventListener('click',()=>{const L=DECKS[rd.ci].lesson;if(rd.p<L.length-1){rd.p++;renderPage();}else{$('read').hidden=true;start(rd.ci,'term');}});
-$('rBack').addEventListener('click',()=>{$('read').hidden=true;$('home').hidden=false;renderHome();});
+$('rNext').addEventListener('click',()=>{const L=DECKS[rd.ci].lesson;if(rd.p<L.length-1){rd.p++;renderPage();}else if(jump){leaveJump();}else{$('read').hidden=true;start(rd.ci,'term');}});
+$('rBack').addEventListener('click',()=>{if(jump){leaveJump();return;}$('read').hidden=true;$('home').hidden=false;renderHome();});
+function jumpToRead(e){if(e)e.stopPropagation();const c=queue[0];if(!c||!c.pg)return;const L=DECKS[c.ci].lesson||[];const i=L.findIndex(p=>p.h===c.pg);if(i<0)return;
+  jump={y:window.scrollY};rd={ci:c.ci,p:i};const t=split(DECKS[c.ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';setBackLabel();
+  $('study').hidden=true;$('read').hidden=false;renderPage();try{history.pushState({jump:1},'');}catch(err){}}
+function backToCard(){if(!jump)return;const y=jump.y;jump=null;setBackLabel();$('read').hidden=true;$('study').hidden=false;window.scrollTo(0,y);}
+function leaveJump(){if(history.state&&history.state.jump){history.back();}else{backToCard();}}
+window.addEventListener('popstate',()=>{if(jump)backToCard();});
+$('toRead').addEventListener('click',jumpToRead);
 $('pdone').addEventListener('change',e=>{const S=loadPg(),k=pk(rd.ci,rd.p);if(e.target.checked)S[k]=1;else delete S[k];savePg(S);
   $('pdoneBox').classList.toggle('on',e.target.checked);const L=DECKS[rd.ci].lesson;$('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');});
 $('card').addEventListener('click',flip);''')
