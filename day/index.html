@@ -9,6 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="apple-touch-icon" href="../icons/apple-day-180.png">
+<script src="../sync.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -631,6 +632,12 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowRight') verdict(true);
   else if(e.key==='ArrowLeft') verdict(false);
 });
+// 別の端末の記録が届いたら(sync.js):カードの予定を読み直し、ホームなら一覧を描き直す。
+// 単元をまだ自分で開け閉めしていなければ、届いた「前回の続き」に合わせて開く単元も変える。
+let touched=false; $('chapters').addEventListener('click',e=>{if(e.target.closest('summary'))touched=true;});
+window.addEventListener('neuro-sync',e=>{const ks=(e.detail&&e.detail.keys)||[];
+  if(ks.indexOf(SRS_KEY)>=0){try{SRS=JSON.parse(localStorage.getItem(SRS_KEY)||'{}')||{};}catch(err){}}
+  if(!$('home').hidden){renderHome(); if(!touched)openCurrent(false);}});
 renderHome();
 // 開いたときは、前回の続きの単元を開く(その単元の印が全部ついていれば、次のまだ終わっていない単元)。
 // 記録がなければ、最初のまだ終わっていない単元。下の方なら見える位置までスクロールする。
