@@ -321,9 +321,20 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowLeft') verdict(false);
 });
 // 別の端末の記録が届いたら一覧を描き直す(sync.js)
-window.addEventListener('neuro-sync',()=>{if(!$('home').hidden)renderHome();});
+let touched=false; $('chapters').addEventListener('click',e=>{if(e.target.closest('summary'))touched=true;});
+window.addEventListener('neuro-sync',()=>{if(!$('home').hidden){renderHome(); if(!touched)openCurrent(false);}});
 renderHome();
-document.querySelector('details').open=true;
+// 開いたときは、前回の続きの単元を開く(その単元の印が全部ついていれば、次のまだ終わっていない単元)。
+// 記録がなければ、最初のまだ終わっていない単元。下の方なら見える位置までスクロールする。
+function openCurrent(scroll){
+  const ds=[...document.querySelectorAll('#chapters details')]; if(!ds.length) return;
+  const L=loadLast(); let i=(L&&Number.isInteger(L.ci)&&ds[L.ci])?L.ci:0;
+  while(i<ds.length-1&&ds[i].classList.contains('done')) i++;
+  ds.forEach((d,k)=>{d.open=k===i;});
+  if(scroll){const r=ds[i].querySelector('summary').getBoundingClientRect();
+    if(r.top>innerHeight*0.6) window.scrollTo({top:r.top+scrollY-12});}
+}
+openCurrent(true);
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(()=>{});</script>
 </body>
