@@ -202,6 +202,19 @@ details.done .prog,details.done .num{color:var(--ok)}
 .hlpop.onmark .er{border-color:var(--again);color:var(--again)}
 @media (max-width:459.98px){.penbar .pl{display:none}.penbar{gap:6px;padding:6px 8px}.penbar .sw{width:28px;height:28px}}
 #read.pen .rtext{touch-action:pan-y;-webkit-touch-callout:none;cursor:text}#read.pen .rtext [data-bi]{cursor:crosshair}
+.hlvbtn{display:flex;align-items:center;gap:8px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--ink);font:inherit;font-size:.95rem;cursor:pointer;text-align:left}.hlvbtn small{margin-left:auto;color:var(--muted);font-size:.8rem}
+#hlv .where b{font-size:1rem}#hlv #hlvSum{color:var(--muted);font-size:.85rem}
+.hlvf{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.hlvf select{font:inherit;font-size:.88rem;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface);color:var(--ink);max-width:100%;flex:1 1 200px}
+.hlvcols{display:flex;gap:6px;align-items:center}.hlvcols .sw{width:28px;height:28px}.hlvcols .all{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:.8rem;font-weight:700;cursor:pointer}
+.hlvcols button.on{outline:3px solid var(--violet);outline-offset:2px}
+.hlvctx{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted);cursor:pointer}.hlvctx input{width:18px;height:18px;accent-color:var(--violet);margin:0}
+.hlvlist{display:flex;flex-direction:column;gap:10px}.hlvlist h2{font-family:var(--display);font-size:1.1rem;margin:10px 2px 0}
+.hlvpg{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 14px 12px;display:flex;flex-direction:column;gap:2px}
+.hlvh{display:flex;align-items:baseline;gap:10px;background:none;border:none;border-bottom:1px solid var(--line);padding:8px 0;margin-bottom:4px;font:inherit;font-weight:700;color:var(--ink);text-align:left;cursor:pointer}.hlvh small{margin-left:auto;flex:none;color:var(--violet);font-size:.78rem}
+.hli{display:block;width:100%;background:none;border:none;border-radius:8px;padding:6px 4px;font:inherit;font-size:.98rem;line-height:1.8;color:var(--ink);text-align:left;cursor:pointer;overflow-wrap:anywhere}.hli:hover{background:var(--paper)}.hli mark.hl{background:var(--hl);color:inherit;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}.hli.ctx{color:var(--muted)}.hli.ctx mark.hl{color:var(--ink)}
+.hlvnone{color:var(--muted);text-align:center;padding:24px 8px}
+.rtext [data-bi]{transition:background .4s}.rtext .hlflash{background:var(--violet-soft);border-radius:6px}
 </style>
 </head>
 <body>
@@ -214,6 +227,7 @@ details.done .prog,details.done .num{color:var(--ok)}
     <button class="toggle" id="optShuffle" aria-pressed="false"><span class="dot"></span>順番を混ぜる</button>
   </div>
   <button class="resume" id="resume" type="button" hidden><b>前回の続き</b><span></span><small></small></button>
+  <button class="hlvbtn" id="hlvBtn" type="button"><span>🖍</span><b>塗った所</b><small></small></button>
   <div class="chapters" id="chapters"></div>
 </main>
 <main class="wrap" id="read" hidden>
@@ -230,6 +244,13 @@ details.done .prog,details.done .num{color:var(--ok)}
 </main>
 <div class="hlpop" id="hlPop" hidden><button type="button" data-c="y" class="sw hl-y" aria-label="黄で塗る"></button><button type="button" data-c="g" class="sw hl-g" aria-label="緑で塗る"></button><button type="button" data-c="p" class="sw hl-p" aria-label="ピンクで塗る"></button><button type="button" data-c="b" class="sw hl-b" aria-label="青で塗る"></button><button type="button" data-c="x" class="er">消す</button></div>
 <div class="zoom" id="zoom" hidden><div class="zbar"><button type="button" id="zClose">✕ 閉じる</button><span>2本指で拡大 ・ ダブルタップで2.5倍</span></div><div class="zwrap" id="zWrap"><img id="zImg" alt=""></div><p class="zcap" id="zCap"></p></div>
+<main class="wrap" id="hlv" hidden>
+  <div class="bar"><button class="back" id="hlvBack">← 単元一覧</button><div class="where"><b>🖍 塗った所</b> <span id="hlvSum"></span></div></div>
+  <div class="hlvf"><select id="hlvDay" aria-label="Day"></select>
+    <div class="hlvcols" id="hlvCols"><button type="button" data-c="" class="all">全色</button><button type="button" data-c="y" class="sw hl-y" aria-label="黄"></button><button type="button" data-c="g" class="sw hl-g" aria-label="緑"></button><button type="button" data-c="p" class="sw hl-p" aria-label="ピンク"></button><button type="button" data-c="b" class="sw hl-b" aria-label="青"></button></div>
+    <label class="hlvctx"><input type="checkbox" id="hlvCtx">前後の文も表示</label></div>
+  <div id="hlvList" class="hlvlist"></div>
+</main>
 <main class="wrap" id="study" hidden>
   <div class="bar">
     <button class="back" id="back">← 単元一覧</button>
@@ -377,7 +398,7 @@ function resumeLast(){const L=loadLast();if(!L)return;
   if(L.type==='deck'){if(!!L.star!==starOnly){starOnly=!!L.star;$('optStar').setAttribute('aria-pressed',starOnly);}start(L.ci,L.si);}
   else if(L.type==='read'&&typeof openReader==='function'){openReader(L.ci,L.p);}}
 function split(t){const m=t.match(/^(\d+)\s+([^(（]+)[(（]?([^)）]*)/);return m?{n:m[1],en:m[2].trim(),ja:m[3]||''}:{n:'',en:t,ja:''};}
-function renderHome(){
+function renderHome(){hlvCount();
   const box=$('chapters'); const open=[...box.querySelectorAll('details')].map(d=>d.open); box.innerHTML='';
   let total=0;
   DECKS.forEach((d,ci)=>{
@@ -581,7 +602,7 @@ function zoomOpen(k){const f=dockFigs[k];if(!f)return;$('zImg').src=f.src;$('zIm
   try{history.pushState({zoom:1},'');}catch(e){}}
 function zoomClose(){$('zoom').hidden=true;document.body.style.overflow='';}
 function zApply(){$('zImg').style.width=(zScale*100)+'%';}
-function setBackLabel(){$('rBack').textContent=jump?'← カードに戻る':'← 単元一覧';}
+function setBackLabel(){$('rBack').textContent=jump?(jump.list?'← 塗った所に戻る':'← カードに戻る'):'← 単元一覧';}
 const RPOS_KEY='neuro-readpos-day';
 function loadRpos(){try{return JSON.parse(localStorage.getItem(RPOS_KEY)||'{}')||{};}catch(e){return {};}}
 function openReader(ci,at){jump=null;setBackLabel();const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[pk(ci,i)]);const R=loadRpos()[ci];
@@ -608,14 +629,14 @@ function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');con
   const done=!!loadPg()[pk(rd.ci,rd.p)];$('pdone').checked=done;$('pdoneBox').classList.toggle('on',done);
   $('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');$('rFill').style.width=((rd.p+1)/L.length*100)+'%';
   if(!jump){try{const R=loadRpos();R[rd.ci]=pg.h;localStorage.setItem(RPOS_KEY,JSON.stringify(R));}catch(e){}saveLast({type:'read',ci:rd.ci,p:rd.p,total:L.length,label:$('rTitle').textContent+' ・ ① 読む',t:Date.now()});}
-  $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?(jump?'カードに戻る →':'② 用語へ進む →'):'次へ →';hlPage();window.scrollTo(0,0);}
+  $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?(jump?(jump.list?'一覧に戻る →':'カードに戻る →'):'② 用語へ進む →'):'次へ →';hlPage();window.scrollTo(0,0);}
 $('rPrev').addEventListener('click',()=>{if(rd.p>0){rd.p--;renderPage();}});
 $('rNext').addEventListener('click',()=>{const L=DECKS[rd.ci].lesson;if(rd.p<L.length-1){rd.p++;renderPage();}else if(jump){leaveJump();}else{$('read').hidden=true;start(rd.ci,'term');}});
 $('rBack').addEventListener('click',()=>{if(jump){leaveJump();return;}$('read').hidden=true;$('home').hidden=false;renderHome();});
 function jumpToRead(e){if(e)e.stopPropagation();const c=nowCard();if(!c||!c.pg)return;const L=DECKS[c.ci].lesson||[];const i=L.findIndex(p=>p.h===c.pg);if(i<0)return;
   jump={y:window.scrollY};rd={ci:c.ci,p:i};const t=split(DECKS[c.ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';setBackLabel();
   $('study').hidden=true;$('read').hidden=false;renderPage();try{history.pushState({jump:1},'');}catch(err){}}
-function backToCard(){if(!jump)return;const y=jump.y;jump=null;setBackLabel();$('read').hidden=true;$('study').hidden=false;window.scrollTo(0,y);}
+function backToCard(){if(!jump)return;const y=jump.y,L=jump.list;jump=null;setBackLabel();hlHide();$('read').hidden=true;if(L){$('hlv').hidden=false;hlvRender();}else $('study').hidden=false;window.scrollTo(0,y);}
 function leaveJump(){if(history.state&&history.state.jump){history.back();}else{backToCard();}}
 window.addEventListener('popstate',()=>{if(!$('zoom').hidden){zoomClose();return;}if(jump)backToCard();});
 $('zClose').addEventListener('click',()=>{if(history.state&&history.state.zoom)history.back();else zoomClose();});
@@ -723,6 +744,59 @@ $('reader').addEventListener('pointercancel',e=>hlEnd(e,true));
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('read').hidden){if(!$('hlPop').hidden)hlHide();else if(hlPen)hlSetPen(false);}});
 // 別の端末で塗った分が届いたら、開いているページを描き直す
 window.addEventListener('neuro-sync',e=>{const ks=(e.detail&&e.detail.keys)||[];if(ks.indexOf(HL_KEY)>=0&&!$('read').hidden&&!hlDrag&&!hlTarget)hlPage();});
+// ---- 塗った所の一覧(ホームの「🖍 塗った所」から)----
+// 蛍光ペンで塗った所だけを、Day → ページの順に並べる。Day・色で絞り込み、「前後の文も表示」で段落ごと見られる。
+// 項目をタップすると、そのページの「読む」を開いてその段落まで移動する(「← 塗った所に戻る」で一覧へ)。
+let hlvDay='',hlvCol='',hlvMode=null;
+function hlvCtx(){if(hlvMode==null){try{hlvMode=localStorage.getItem('neuro-hlv-ctx')==='1';}catch(e){hlvMode=false;}}return hlvMode;}
+function hlvRaw(){try{return JSON.parse(localStorage.getItem('neuro-hl-day')||'{}')||{};}catch(e){return {};}}
+function hlvBlockText(line){let m;if(/^!img\s/.test(line))return null;if((m=line.match(/^-\s+(.*)$/))||(m=line.match(/^\d+\.\s+(.*)$/)))return m[1];return line;}
+// 保存した塗りを、いまの本文に当てはめる(「読む」で開いたときと同じ付け直し方)
+function hlvPages(){const H=hlvRaw(),out=[];
+  Object.keys(H).forEach(k=>{const i=k.indexOf(':');const ci=+k.slice(0,i),h=k.slice(i+1);const D=DECKS[ci];if(!D||!D.lesson)return;
+    const p=D.lesson.findIndex(x=>x.h===h);if(p<0)return;const blocks=[];
+    D.lesson[p].b.forEach((line,bi)=>{const t=hlvBlockText(line);if(t!=null)blocks[bi]={text:t,a:new Array(t.length).fill(null)};});
+    const all=blocks.map((b,bi)=>b&&{b,bi}).filter(Boolean);
+    (H[k]||[]).forEach(([bi,s,e,c,t])=>{if(!t||!/^[ygpb]$/.test(c))return;let b=blocks[bi];
+      if(!(b&&b.text.slice(s,e)===t)){let j=b?b.text.indexOf(t):-1;if(j<0){const f=all.find(x=>x.b.text.indexOf(t)>=0);if(f){b=f.b;j=b.text.indexOf(t);}}if(j<0)return;s=j;e=j+t.length;}
+      for(let q=s;q<e;q++)b.a[q]=c;});
+    const bl=[];blocks.forEach((b,bi)=>{if(b&&b.a.some(Boolean))bl.push({bi,text:b.text,a:b.a});});
+    if(bl.length)out.push({ci,p,h,blocks:bl});});
+  return out.sort((x,y)=>x.ci-y.ci||x.p-y.p);}
+// 段落の中の、塗った所のかたまり(色が違っても続いていれば1つ)
+function hlvGroups(b,col){const g=[];let i=0;const a=b.a;
+  while(i<a.length){if(!a[i]){i++;continue;}let j=i;while(j<a.length&&a[j])j++;if(!col||a.slice(i,j).indexOf(col)>=0)g.push([i,j]);i=j;}return g;}
+function hlvMarks(el,text,a,from,to){let i=from;while(i<to){let j=i;while(j<to&&a[j]===a[i])j++;const t=text.slice(i,j);
+  if(a[i]){const m=document.createElement('mark');m.className='hl hl-'+a[i];m.textContent=t;el.append(m);}else el.append(document.createTextNode(t));i=j;}}
+function hlvCount(){const b=$('hlvBtn');if(!b)return;let n=0;hlvPages().forEach(pg=>pg.blocks.forEach(bl=>{n+=hlvGroups(bl,'').length;}));
+  b.querySelector('small').textContent=n?n+' か所':'まだありません';}
+function hlvOpen(){$('home').hidden=true;$('hlv').hidden=false;
+  const sel=$('hlvDay');if(!sel.options.length){sel.append(new Option('すべてのDay',''));DECKS.forEach((d,ci)=>{if(d.lesson&&d.lesson.length){const t=split(d.title);sel.append(new Option('Day '+t.n+' '+t.en,String(ci)));}});}
+  hlvRender();window.scrollTo(0,0);}
+function hlvRender(){const box=$('hlvList');box.textContent='';$('hlvDay').value=hlvDay;$('hlvCtx').checked=hlvCtx();
+  [...$('hlvCols').children].forEach(b=>b.classList.toggle('on',b.dataset.c===hlvCol));
+  const pages=hlvPages().filter(pg=>hlvDay===''||pg.ci===+hlvDay);let n=0,lastCi=-1;
+  pages.forEach(pg=>{const items=[];pg.blocks.forEach(bl=>{const g=hlvGroups(bl,hlvCol);if(g.length)items.push({bl,g});});if(!items.length)return;
+    if(pg.ci!==lastCi){lastCi=pg.ci;const t=split(DECKS[pg.ci].title);const h=document.createElement('h2');h.textContent='Day '+t.n+' '+t.en;box.append(h);}
+    const sec=document.createElement('section');sec.className='hlvpg';const hd=document.createElement('button');hd.type='button';hd.className='hlvh';
+    hd.innerHTML='<span></span><small>📖 開く</small>';hd.firstChild.textContent=pg.h;hd.addEventListener('click',()=>hlvGo(pg.ci,pg.p,null));sec.append(hd);
+    items.forEach(({bl,g})=>{if(hlvCtx()){n+=g.length;const p=document.createElement('button');p.type='button';p.className='hli ctx';hlvMarks(p,bl.text,bl.a,0,bl.text.length);
+        p.addEventListener('click',()=>hlvGo(pg.ci,pg.p,bl.bi));sec.append(p);}
+      else g.forEach(([s,e])=>{n++;const p=document.createElement('button');p.type='button';p.className='hli';hlvMarks(p,bl.text,bl.a,s,e);
+        p.addEventListener('click',()=>hlvGo(pg.ci,pg.p,bl.bi));sec.append(p);});});
+    box.append(sec);});
+  $('hlvSum').textContent=n?n+' か所':'';
+  if(!n){const p=document.createElement('p');p.className='hlvnone';
+    p.textContent=Object.keys(hlvRaw()).length?'この条件で塗った所はありません。':'まだ塗った所がありません。「読む」で文字を選ぶか、🖍 でなぞると塗れます。';box.append(p);}}
+function hlvGo(ci,p,bi){jump={y:window.scrollY,list:true};rd={ci,p};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';setBackLabel();
+  $('hlv').hidden=true;$('read').hidden=false;renderPage();try{history.pushState({jump:1},'');}catch(e){}
+  if(bi!=null){const el=document.querySelector('#reader .rtext [data-bi="'+bi+'"]');if(el){el.scrollIntoView({block:'center'});el.classList.add('hlflash');setTimeout(()=>el.classList.remove('hlflash'),1600);}}}
+$('hlvBtn').addEventListener('click',hlvOpen);
+$('hlvBack').addEventListener('click',()=>{$('hlv').hidden=true;$('home').hidden=false;renderHome();});
+$('hlvDay').addEventListener('change',e=>{hlvDay=e.target.value;hlvRender();});
+$('hlvCols').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;hlvCol=b.dataset.c;hlvRender();});
+$('hlvCtx').addEventListener('change',e=>{hlvMode=e.target.checked;try{localStorage.setItem('neuro-hlv-ctx',hlvMode?'1':'');}catch(err){}hlvRender();});
+window.addEventListener('neuro-sync',e=>{const ks=(e.detail&&e.detail.keys)||[];if(ks.indexOf('neuro-hl-day')<0)return;if(!$('hlv').hidden)hlvRender();else if(!$('home').hidden)hlvCount();});
 $('rBack').addEventListener('click',hlHide);
 $('card').addEventListener('click',flip);
 $('btnShow').addEventListener('click',flip);
