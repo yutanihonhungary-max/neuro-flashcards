@@ -60,22 +60,14 @@ rep('<main class="wrap" id="study" hidden>','''<main class="wrap" id="read" hidd
       <div class="track"><div class="fill" id="rFill"></div></div></div>
   </div>
   <article class="reader" id="reader"></article>
-  <label class="pdone" id="pdoneBox"><input type="checkbox" id="pdone"><span>このページは終わった</span></label>
   <div class="rnav"><button id="rPrev">← 前へ</button><button class="go" id="rNext">次へ →</button></div>
 </main>
 <div class="zoom" id="zoom" hidden><div class="zbar"><button type="button" id="zClose">✕ 閉じる</button><span>2本指で拡大 ・ ダブルタップで2.5倍</span></div><div class="zwrap" id="zWrap"><img id="zImg" alt=""></div><p class="zcap" id="zCap"></p></div>
 <main class="wrap" id="study" hidden>''')
 # reader logic
 rep("$('card').addEventListener('click',flip);",r'''let rd={ci:0,p:0};
-const PG_KEY='neuro-done-pages';
 function pk(ci,i){return ci+':'+DECKS[ci].lesson[i].h;}
-function loadPg(){let S;try{S=JSON.parse(localStorage.getItem(PG_KEY)||'{}')||{};}catch(e){return {};}
-  let mig=false;Object.keys(S).forEach(k=>{const m=k.match(/^(\d+)-(\d+)$/);if(!m)return;mig=true;delete S[k];
-    let ci=+m[1],i=+m[2];if((ci===0&&i>=14)||(ci===1&&i>=2))i++;if(DECKS[ci]&&DECKS[ci].lesson&&DECKS[ci].lesson[i])S[pk(ci,i)]=1;});
-  if(mig)savePg(S);return S;}
-function savePg(S){try{localStorage.setItem(PG_KEY,JSON.stringify(S));}catch(e){}}
-function pagesDone(ci){const S=loadPg(),L=DECKS[ci].lesson||[];return L.filter((_,i)=>S[pk(ci,i)]).length;}
-function pagesLabel(ci){const n=DECKS[ci].lesson.length,c=pagesDone(ci);return c?'✓'+c+'/'+n+' ページ':n+' ページ';}
+function pagesLabel(ci){const L=DECKS[ci].lesson,n=L.length,r=rposGet(ci),j=r?L.findIndex(x=>x.h===r.h):-1;return j>=0?'続き '+(j+1)+'/'+n+' ページ':n+' ページ';}
 let jump=null;
 let dockFigs=[],dockCur=0,figObs=null,zScale=1;
 function dockMin(){try{return localStorage.getItem('neuro-dockmin')==='1';}catch(e){return false;}}
@@ -114,10 +106,19 @@ function zApply(){$('zImg').style.width=(zScale*100)+'%';}
 function setBackLabel(){$('rBack').textContent=jump?'← カードに戻る':'← 単元一覧';}
 const RPOS_KEY='neuro-readpos-day';
 function loadRpos(){try{return JSON.parse(localStorage.getItem(RPOS_KEY)||'{}')||{};}catch(e){return {};}}
-function openReader(ci,at){jump=null;setBackLabel();const S=loadPg(),L=DECKS[ci].lesson;let f=L.findIndex((_,i)=>!S[pk(ci,i)]);const R=loadRpos()[ci];
-  if(at==null&&R!=null){const j=L.findIndex(x=>x.h===R);if(j>=0)at=j;}rd={ci,p:at!=null&&at<L.length?at:(f<0?0:f)};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
+// どこまで読んだか:Dayごとに {h:ページの見出し, y:そのページのどこまでスクロールしたか(0〜1)}。端末間で同期する。
+function rposGet(ci){const v=loadRpos()[ci];if(!v)return null;return typeof v==='string'?{h:v,y:0}:(v.h?v:null);}
+function rposSave(y){if(jump)return;try{const R=loadRpos();R[rd.ci]={h:DECKS[rd.ci].lesson[rd.p].h,y:Math.round(Math.min(1,Math.max(0,y))*1000)/1000};localStorage.setItem(RPOS_KEY,JSON.stringify(R));}catch(e){}}
+function rposNow(t){const m=t.scrollHeight-t.clientHeight;return m>0?t.scrollTop/m:0;}
+let rposT=0;
+function rposScroll(e){if(jump)return;const t=e.currentTarget;clearTimeout(rposT);rposT=setTimeout(()=>{if(t.isConnected&&!jump&&!$('read').hidden)rposSave(rposNow(t));},400);}
+function rposFlush(){clearTimeout(rposT);const t=document.querySelector('#reader .rtext');if(t&&!jump&&!$('read').hidden)rposSave(rposNow(t));}
+function rposRestore(){const y=rd.y;rd.y=0;if(!(y>0))return;const t=document.querySelector('#reader .rtext');if(!t)return;requestAnimationFrame(()=>{t.scrollTop=y*(t.scrollHeight-t.clientHeight);});}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')rposFlush();});
+function openReader(ci,at){jump=null;setBackLabel();const L=DECKS[ci].lesson;let y=0;
+  if(at==null){const r=rposGet(ci);if(r){const j=L.findIndex(x=>x.h===r.h);if(j>=0){at=j;y=r.y||0;}}}rd={ci,p:at!=null&&at<L.length?at:0,y};const t=split(DECKS[ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';
   $('home').hidden=true;$('read').hidden=false;renderPage();}
-function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');const pdb=$('pdoneBox');box.textContent='';
+function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');box.textContent='';
   const h2=document.createElement('h2');h2.textContent=pg.h;const tx=document.createElement('div');tx.className='rtext';let list=null,kind='';const figs=[];dockFigs=figs;
   if(figObs){figObs.disconnect();figObs=null;}
   if(pg.b.some(l=>/^!img\s/.test(l))){const dk=document.createElement('div');dk.className='dock'+(dockMin()?' min':'');dk.id='dock';
@@ -134,14 +135,13 @@ function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');con
     $('dMin').textContent=dockMin()?'大きく':'小さく';$('dMin').addEventListener('click',()=>{const m=!dockMin();try{localStorage.setItem('neuro-dockmin',m?'1':'');}catch(e){}$('dock').classList.toggle('min',m);$('dMin').textContent=m?'大きく':'小さく';});
     $('dZoom').addEventListener('click',()=>zoomOpen(dockCur));$('dImg').addEventListener('click',()=>zoomOpen(dockCur));dockShow(0,false);
     splitBind();requestAnimationFrame(syncDock);}
-  tx.append(pdb);tx.addEventListener('scroll',()=>{if(syncQ)return;syncQ=true;requestAnimationFrame(()=>{syncQ=false;syncDock();});},{passive:true});
-  const done=!!loadPg()[pk(rd.ci,rd.p)];$('pdone').checked=done;$('pdoneBox').classList.toggle('on',done);
-  $('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');$('rFill').style.width=((rd.p+1)/L.length*100)+'%';
-  if(!jump){try{const R=loadRpos();R[rd.ci]=pg.h;localStorage.setItem(RPOS_KEY,JSON.stringify(R));}catch(e){}saveLast({type:'read',ci:rd.ci,p:rd.p,total:L.length,label:$('rTitle').textContent+' ・ ① 読む',t:Date.now()});}
+  tx.addEventListener('scroll',rposScroll,{passive:true});tx.addEventListener('scroll',()=>{if(syncQ)return;syncQ=true;requestAnimationFrame(()=>{syncQ=false;syncDock();});},{passive:true});
+  $('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ';$('rFill').style.width=((rd.p+1)/L.length*100)+'%';
+  if(!jump){rposSave(rd.y||0);saveLast({type:'read',ci:rd.ci,p:rd.p,total:L.length,label:$('rTitle').textContent+' ・ ① 読む',t:Date.now()});}
   $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?(jump?'カードに戻る →':'② 用語へ進む →'):'次へ →';window.scrollTo(0,0);}
 $('rPrev').addEventListener('click',()=>{if(rd.p>0){rd.p--;renderPage();}});
 $('rNext').addEventListener('click',()=>{const L=DECKS[rd.ci].lesson;if(rd.p<L.length-1){rd.p++;renderPage();}else if(jump){leaveJump();}else{$('read').hidden=true;start(rd.ci,'term');}});
-$('rBack').addEventListener('click',()=>{if(jump){leaveJump();return;}$('read').hidden=true;$('home').hidden=false;renderHome();});
+$('rBack').addEventListener('click',()=>{rposFlush();if(jump){leaveJump();return;}$('read').hidden=true;$('home').hidden=false;renderHome();});
 function jumpToRead(e){if(e)e.stopPropagation();const c=nowCard();if(!c||!c.pg)return;const L=DECKS[c.ci].lesson||[];const i=L.findIndex(p=>p.h===c.pg);if(i<0)return;
   jump={y:window.scrollY};rd={ci:c.ci,p:i};const t=split(DECKS[c.ci].title);$('rTitle').textContent='Day '+t.n+' '+t.en;$('rSub').textContent='① 読む';setBackLabel();
   $('study').hidden=true;$('read').hidden=false;renderPage();try{history.pushState({jump:1},'');}catch(err){}}
@@ -157,14 +157,12 @@ $('zClose').addEventListener('click',()=>{if(history.state&&history.state.zoom)h
   w.addEventListener('touchmove',e=>{if(e.touches.length===2&&d0){e.preventDefault();zScale=Math.min(5,Math.max(1,s0*dist(e.touches)/d0));zApply();}},{passive:false});
   w.addEventListener('touchend',e=>{if(e.touches.length<2)d0=0;});})();
 $('toRead').addEventListener('click',jumpToRead);
-$('pdone').addEventListener('change',e=>{const S=loadPg(),k=pk(rd.ci,rd.p);if(e.target.checked)S[k]=1;else delete S[k];savePg(S);
-  $('pdoneBox').classList.toggle('on',e.target.checked);const L=DECKS[rd.ci].lesson;$('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');});
 $('card').addEventListener('click',flip);''')
 # ---- 蛍光ペン(「読む」の本文。仕組みは src/highlight.js)
 rep("pg.b.forEach(line=>{let m;","pg.b.forEach((line,bi)=>{let m;")
 rep("const li=document.createElement('li');li.textContent=m[1];list.append(li);","const li=document.createElement('li');li.textContent=m[1];li.dataset.bi=bi;list.append(li);",2)
 rep("const p=document.createElement('p');p.textContent=line;tx.append(p);","const p=document.createElement('p');p.textContent=line;p.dataset.bi=bi;tx.append(p);")
-rep("'次へ →';window.scrollTo(0,0);}","'次へ →';hlPage();window.scrollTo(0,0);}")
+rep("'次へ →';window.scrollTo(0,0);}","'次へ →';hlPage();window.scrollTo(0,0);rposRestore();}")
 rep('<div class="track"><div class="fill" id="rFill"></div></div></div>\n  </div>','<div class="track"><div class="fill" id="rFill"></div></div></div>\n    <button class="penbtn" id="penBtn" type="button" aria-pressed="false" aria-label="蛍光ペン" title="蛍光ペン(なぞって塗る)">🖍</button>\n  </div>\n  <div class="penbar" id="penBar" hidden><span class="pl">なぞって塗る</span><button type="button" data-c="y" class="sw hl-y" aria-label="黄"></button><button type="button" data-c="g" class="sw hl-g" aria-label="緑"></button><button type="button" data-c="p" class="sw hl-p" aria-label="ピンク"></button><button type="button" data-c="b" class="sw hl-b" aria-label="青"></button><button type="button" data-c="x" class="er">消しゴム</button><button type="button" id="penDone" class="pd">終わる</button></div>')
 rep('<div class="zoom" id="zoom" hidden>','<div class="hlpop" id="hlPop" hidden><button type="button" data-c="y" class="sw hl-y" aria-label="黄で塗る"></button><button type="button" data-c="g" class="sw hl-g" aria-label="緑で塗る"></button><button type="button" data-c="p" class="sw hl-p" aria-label="ピンクで塗る"></button><button type="button" data-c="b" class="sw hl-b" aria-label="青で塗る"></button><button type="button" data-c="x" class="er">消す</button></div>\n<div class="zoom" id="zoom" hidden>')
 rep('</style>','.hl-y{--hl:rgba(255,226,0,.5)}.hl-g{--hl:rgba(60,215,110,.4)}.hl-p{--hl:rgba(255,95,170,.36)}.hl-b{--hl:rgba(70,170,255,.38)}\n:root[data-theme="dark"] .hl-y{--hl:rgba(255,215,0,.38)}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .hl-y{--hl:rgba(255,215,0,.38)}}\n.rtext mark.hl{background:var(--hl);color:inherit;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}\n#read .penbtn{flex:none;width:40px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:1.1rem;line-height:1;cursor:pointer;padding:0}\n#read .penbtn[aria-pressed="true"]{border:2px solid var(--violet);background:var(--violet-soft)}\n.penbar{display:flex;align-items:center;gap:8px;flex:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 10px;overflow-x:auto}.penbar[hidden]{display:none}\n.penbar .pl{font-size:.78rem;color:var(--muted);white-space:nowrap;margin-right:2px}\n.sw{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:linear-gradient(var(--hl),var(--hl)),var(--surface);cursor:pointer;flex:none;padding:0}\n.penbar .sw.on,.penbar .er.on{outline:3px solid var(--violet);outline-offset:2px}\n.penbar .er,.penbar .pd,.hlpop .er{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap}\n.penbar .pd{margin-left:auto;border-color:var(--violet);color:var(--violet)}\n.hlpop{position:fixed;z-index:40;display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 8px;box-shadow:0 6px 20px rgba(0,0,0,.18)}.hlpop[hidden]{display:none}\n.hlpop.onmark .er{border-color:var(--again);color:var(--again)}\n@media (max-width:459.98px){.penbar .pl{display:none}.penbar{gap:6px;padding:6px 8px}.penbar .sw{width:28px;height:28px}}\n#read.pen .rtext{touch-action:pan-y;-webkit-touch-callout:none;cursor:text}#read.pen .rtext [data-bi]{cursor:crosshair}\n</style>')

@@ -106,7 +106,7 @@ function renderResume(){const box=$('resume');const L=loadLast();if(!L||!DECKS[L
   box.querySelector('span').textContent=L.label;box.querySelector('small').textContent=sub;box.hidden=false;}
 function resumeLast(){const L=loadLast();if(!L)return;
   if(L.type==='deck'){if(!!L.star!==starOnly){starOnly=!!L.star;$('optStar').setAttribute('aria-pressed',starOnly);}start(L.ci,L.si);}
-  else if(L.type==='read'&&typeof openReader==='function'){openReader(L.ci,L.p);}}
+  else if(L.type==='read'&&typeof openReader==='function'){openReader(L.ci);}}
 function split(t){const m=t.match(/^(\d+)\s+([^(（]+)[(（]?([^)）]*)/);return m?{n:m[1],en:m[2].trim(),ja:m[3]||''}:{n:'',en:t,ja:''};}
 function renderHome(){
   const box=$('chapters'); const open=[...box.querySelectorAll('details')].map(d=>d.open); box.innerHTML='';
