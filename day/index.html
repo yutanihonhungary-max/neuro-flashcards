@@ -187,6 +187,21 @@ details.done .prog,details.done .num{color:var(--ok)}
 .donebox .unit .sub{display:block;font-size:.75rem;color:var(--muted);font-weight:400}
 .restart{background:none;border:none;color:var(--muted);font-size:.8rem;text-decoration:underline;cursor:pointer;padding:0}
 #read{box-sizing:border-box;height:100vh;height:100dvh;overflow:hidden;padding:12px 14px 10px;gap:8px}#read .rbar{gap:10px;align-items:center}#read .back{padding:5px 10px;font-size:.85rem}#read .where b{font-size:.92rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#read .rmeta{display:block;font-size:.76rem;font-variant-numeric:tabular-nums}#read .track{height:4px;margin-top:5px}#read .reader{flex:1 1 auto;min-height:0;overflow:hidden;padding:0;gap:0}#read .rtext{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px}#read .rtext .pdone{margin-top:8px}#read .dock{position:relative;margin:0;padding:8px 8px 0;border-bottom:none;flex:none}#read .dock.min{padding-bottom:8px;border-bottom:1px solid var(--line)}#read .dbar{position:absolute;left:14px;right:14px;bottom:6px;pointer-events:none}#read .dbar button{pointer-events:auto;background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);padding:2px 10px;font-size:.75rem}#read .dtabs button.on{background:var(--violet);color:var(--surface)}#read .dock.min .dbar{position:static}#read .rnav{position:static;margin:0;padding:0;flex:none;gap:8px}#read .rnav button{padding:8px;font-size:.95rem;border-radius:10px}@media (max-width:759.98px){#read .dimg{height:min(var(--figh,clamp(130px,30dvh,340px)),calc(100dvh - 230px));min-height:80px}#read.hasfig .splitter{display:block;flex:none;height:18px;cursor:row-resize;touch-action:none;position:relative}#read.hasfig .splitter::before{content:;position:absolute;left:0;right:0;top:8px;height:2px;background:var(--line)}#read.hasfig .splitter .grip{position:absolute;left:calc(50% - 22px);top:3px;width:44px;height:12px;border-radius:6px;background:var(--surface);border:2px solid var(--violet);box-sizing:border-box}#read.hasfig .splitter:hover::before,#read.hasfig .splitter:focus-visible::before,body.dragging #read.hasfig .splitter::before{background:var(--violet);height:3px}#read.hasfig .dock.min+.splitter{display:none}body.dragging.vsplit{cursor:row-resize}}@media (min-width:760px){#read.hasfig{max-width:none;padding:10px 14px 8px}#read.hasfig .reader{flex-direction:row;align-items:stretch;padding:0}#read.hasfig .dock{position:relative;flex:0 0 calc(var(--figr) * (100% - 22px));display:flex;flex-direction:column;padding:12px 0 12px 12px;border-bottom:none;box-sizing:border-box;min-height:0}#read.hasfig .dimg{flex:1 1 auto;height:auto;min-height:0}#read.hasfig .dbar,#read.hasfig .dock.min .dbar{position:absolute;left:20px;right:8px;bottom:20px}#read.hasfig .splitter .grip{position:absolute;top:calc(50% - 22px);left:5px;margin:0}#read.hasfig .rtext{padding:16px 20px 16px 6px}#read.hasfig .rtext .pdone{width:auto;margin:8px 0 0}#read.hasfig .rnav{width:calc((1 - var(--figr)) * (100% - 22px));margin:0 0 0 auto}}
+.hl-y{--hl:rgba(255,226,0,.5)}.hl-g{--hl:rgba(60,215,110,.4)}.hl-p{--hl:rgba(255,95,170,.36)}.hl-b{--hl:rgba(70,170,255,.38)}
+:root[data-theme="dark"] .hl-y{--hl:rgba(255,215,0,.38)}@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .hl-y{--hl:rgba(255,215,0,.38)}}
+.rtext mark.hl{background:var(--hl);color:inherit;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+#read .penbtn{flex:none;width:40px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:1.1rem;line-height:1;cursor:pointer;padding:0}
+#read .penbtn[aria-pressed="true"]{border:2px solid var(--violet);background:var(--violet-soft)}
+.penbar{display:flex;align-items:center;gap:8px;flex:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px 10px;overflow-x:auto}.penbar[hidden]{display:none}
+.penbar .pl{font-size:.78rem;color:var(--muted);white-space:nowrap;margin-right:2px}
+.sw{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:linear-gradient(var(--hl),var(--hl)),var(--surface);cursor:pointer;flex:none;padding:0}
+.penbar .sw.on,.penbar .er.on{outline:3px solid var(--violet);outline-offset:2px}
+.penbar .er,.penbar .pd,.hlpop .er{flex:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.penbar .pd{margin-left:auto;border-color:var(--violet);color:var(--violet)}
+.hlpop{position:fixed;z-index:40;display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 8px;box-shadow:0 6px 20px rgba(0,0,0,.18)}.hlpop[hidden]{display:none}
+.hlpop.onmark .er{border-color:var(--again);color:var(--again)}
+@media (max-width:459.98px){.penbar .pl{display:none}.penbar{gap:6px;padding:6px 8px}.penbar .sw{width:28px;height:28px}}
+#read.pen .rtext{touch-action:pan-y;-webkit-touch-callout:none;cursor:text}#read.pen .rtext [data-bi]{cursor:crosshair}
 </style>
 </head>
 <body>
@@ -206,11 +221,14 @@ details.done .prog,details.done .num{color:var(--ok)}
     <button class="back" id="rBack">← 単元一覧</button>
     <div class="where"><b id="rTitle"></b><span class="rmeta"><span id="rSub"></span> ・ <span id="rPage"></span></span>
       <div class="track"><div class="fill" id="rFill"></div></div></div>
+    <button class="penbtn" id="penBtn" type="button" aria-pressed="false" aria-label="蛍光ペン" title="蛍光ペン(なぞって塗る)">🖍</button>
   </div>
+  <div class="penbar" id="penBar" hidden><span class="pl">なぞって塗る</span><button type="button" data-c="y" class="sw hl-y" aria-label="黄"></button><button type="button" data-c="g" class="sw hl-g" aria-label="緑"></button><button type="button" data-c="p" class="sw hl-p" aria-label="ピンク"></button><button type="button" data-c="b" class="sw hl-b" aria-label="青"></button><button type="button" data-c="x" class="er">消しゴム</button><button type="button" id="penDone" class="pd">終わる</button></div>
   <article class="reader" id="reader"></article>
   <label class="pdone" id="pdoneBox"><input type="checkbox" id="pdone"><span>このページは終わった</span></label>
   <div class="rnav"><button id="rPrev">← 前へ</button><button class="go" id="rNext">次へ →</button></div>
 </main>
+<div class="hlpop" id="hlPop" hidden><button type="button" data-c="y" class="sw hl-y" aria-label="黄で塗る"></button><button type="button" data-c="g" class="sw hl-g" aria-label="緑で塗る"></button><button type="button" data-c="p" class="sw hl-p" aria-label="ピンクで塗る"></button><button type="button" data-c="b" class="sw hl-b" aria-label="青で塗る"></button><button type="button" data-c="x" class="er">消す</button></div>
 <div class="zoom" id="zoom" hidden><div class="zbar"><button type="button" id="zClose">✕ 閉じる</button><span>2本指で拡大 ・ ダブルタップで2.5倍</span></div><div class="zwrap" id="zWrap"><img id="zImg" alt=""></div><p class="zcap" id="zCap"></p></div>
 <main class="wrap" id="study" hidden>
   <div class="bar">
@@ -575,13 +593,13 @@ function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');con
   if(pg.b.some(l=>/^!img\s/.test(l))){const dk=document.createElement('div');dk.className='dock'+(dockMin()?' min':'');dk.id='dock';
     dk.innerHTML='<div class="dimg" id="dImg"><img alt=""></div><div class="dbar"><div class="dtabs" id="dTabs"></div><button type="button" id="dZoom">拡大</button><button type="button" id="dMin"></button></div>';box.append(dk);const sp=document.createElement('div');sp.className='splitter';sp.id='splitter';sp.tabIndex=0;sp.setAttribute('role','separator');sp.setAttribute('aria-orientation','vertical');sp.setAttribute('aria-label','図と本文の幅を変える');sp.title='ドラッグで幅を変更・ダブルクリックで元に戻す';sp.innerHTML='<span class="grip"></span>';box.append(sp);}
   box.append(tx);tx.append(h2);$('read').classList.toggle('hasfig',!!$('dock'));
-  pg.b.forEach(line=>{let m;
+  pg.b.forEach((line,bi)=>{let m;
     if((m=line.match(/^!img\s+(\S+)\s*\|\s*(.*)$/))){kind='';const k=figs.length;figs.push({src:'../img/'+m[1],cap:m[2]});
       const fp=document.createElement('p');fp.className='figref';fp.dataset.k=k;const bt=document.createElement('button');bt.type='button';bt.textContent='図'+(k+1);
       bt.addEventListener('click',()=>dockShow(k,true));fp.append(bt,document.createTextNode(m[2]));tx.append(fp);return;}
-    if((m=line.match(/^-\s+(.*)$/))){if(kind!=='ul'){list=document.createElement('ul');tx.append(list);kind='ul';}const li=document.createElement('li');li.textContent=m[1];list.append(li);}
-    else if((m=line.match(/^\d+\.\s+(.*)$/))){if(kind!=='ol'){list=document.createElement('ol');tx.append(list);kind='ol';}const li=document.createElement('li');li.textContent=m[1];list.append(li);}
-    else{kind='';const p=document.createElement('p');p.textContent=line;tx.append(p);}});
+    if((m=line.match(/^-\s+(.*)$/))){if(kind!=='ul'){list=document.createElement('ul');tx.append(list);kind='ul';}const li=document.createElement('li');li.textContent=m[1];li.dataset.bi=bi;list.append(li);}
+    else if((m=line.match(/^\d+\.\s+(.*)$/))){if(kind!=='ol'){list=document.createElement('ol');tx.append(list);kind='ol';}const li=document.createElement('li');li.textContent=m[1];li.dataset.bi=bi;list.append(li);}
+    else{kind='';const p=document.createElement('p');p.textContent=line;p.dataset.bi=bi;tx.append(p);}});
   if(figs.length){const tb=$('dTabs');figs.forEach((f,k)=>{const b=document.createElement('button');b.type='button';b.textContent='図'+(k+1);b.addEventListener('click',()=>dockShow(k,true));tb.append(b);});
     $('dMin').textContent=dockMin()?'大きく':'小さく';$('dMin').addEventListener('click',()=>{const m=!dockMin();try{localStorage.setItem('neuro-dockmin',m?'1':'');}catch(e){}$('dock').classList.toggle('min',m);$('dMin').textContent=m?'大きく':'小さく';});
     $('dZoom').addEventListener('click',()=>zoomOpen(dockCur));$('dImg').addEventListener('click',()=>zoomOpen(dockCur));dockShow(0,false);
@@ -590,7 +608,7 @@ function renderPage(){const L=DECKS[rd.ci].lesson,pg=L[rd.p],box=$('reader');con
   const done=!!loadPg()[pk(rd.ci,rd.p)];$('pdone').checked=done;$('pdoneBox').classList.toggle('on',done);
   $('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');$('rFill').style.width=((rd.p+1)/L.length*100)+'%';
   if(!jump){try{const R=loadRpos();R[rd.ci]=pg.h;localStorage.setItem(RPOS_KEY,JSON.stringify(R));}catch(e){}saveLast({type:'read',ci:rd.ci,p:rd.p,total:L.length,label:$('rTitle').textContent+' ・ ① 読む',t:Date.now()});}
-  $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?(jump?'カードに戻る →':'② 用語へ進む →'):'次へ →';window.scrollTo(0,0);}
+  $('rPrev').disabled=rd.p===0;$('rNext').textContent=rd.p===L.length-1?(jump?'カードに戻る →':'② 用語へ進む →'):'次へ →';hlPage();window.scrollTo(0,0);}
 $('rPrev').addEventListener('click',()=>{if(rd.p>0){rd.p--;renderPage();}});
 $('rNext').addEventListener('click',()=>{const L=DECKS[rd.ci].lesson;if(rd.p<L.length-1){rd.p++;renderPage();}else if(jump){leaveJump();}else{$('read').hidden=true;start(rd.ci,'term');}});
 $('rBack').addEventListener('click',()=>{if(jump){leaveJump();return;}$('read').hidden=true;$('home').hidden=false;renderHome();});
@@ -611,6 +629,101 @@ $('zClose').addEventListener('click',()=>{if(history.state&&history.state.zoom)h
 $('toRead').addEventListener('click',jumpToRead);
 $('pdone').addEventListener('change',e=>{const S=loadPg(),k=pk(rd.ci,rd.p);if(e.target.checked)S[k]=1;else delete S[k];savePg(S);
   $('pdoneBox').classList.toggle('on',e.target.checked);const L=DECKS[rd.ci].lesson;$('rPage').textContent=(rd.p+1)+' / '+L.length+' ページ'+(pagesDone(rd.ci)?' ・ ✓'+pagesDone(rd.ci):'');});
+// ---- 蛍光ペン(「読む」の本文に色を塗る)----
+// 2つの塗り方:
+//  ・文字を選ぶ(長押し/ドラッグ)と色のボタンが出る → 押すと塗る。塗った所をタップすると色を変える・消す。
+//  ・🖍 ボタンでペンモード → 指やマウスで文字の上をなぞると塗れる(スマホは横になぞると塗り、縦の動きはスクロール)。
+// 保存:neuro-hl-day = { ページのキー(Day:見出し): [[段落番号, 始め, 終わり, 色, 塗った文字], ...] }。端末間で同期する。
+const HL_KEY='neuro-hl-day',HL_COLS=['y','g','p','b'],HL_NAME={y:'黄',g:'緑',p:'ピンク',b:'青'};
+let hlBlocks=[],hlDrag=null,hlPen=false,hlTarget=null;
+function hlLoad(){try{return JSON.parse(localStorage.getItem(HL_KEY)||'{}')||{};}catch(e){return {};}}
+function hlCol(){try{const c=localStorage.getItem('neuro-hl-col');return c==='x'||HL_COLS.indexOf(c)>=0?c:'y';}catch(e){return 'y';}}
+// 段落ごとの塗り(runs)から、1文字ずつの色の並びを作る
+function hlArr(b){const a=new Array(b.text.length).fill(null);b.runs.forEach(([s,e,c])=>{for(let i=s;i<e&&i<a.length;i++)a[i]=c;});return a;}
+function hlRunsOf(a){const r=[];let i=0;while(i<a.length){if(!a[i]){i++;continue;}let j=i;while(j<a.length&&a[j]===a[i])j++;r.push([i,j,a[i]]);i=j;}return r;}
+function hlPaint(b,dr){const a=hlArr(b);if(dr)for(let i=dr.s;i<dr.e&&i<a.length;i++)a[i]=dr.c;
+  const el=b.el;el.textContent='';let i=0;
+  while(i<a.length){let j=i;while(j<a.length&&a[j]===a[i])j++;const t=b.text.slice(i,j);
+    if(a[i]){const m=document.createElement('mark');m.className='hl hl-'+a[i];m.dataset.s=i;m.dataset.e=j;m.textContent=t;el.append(m);}
+    else el.append(document.createTextNode(t));i=j;}}
+// ページを描いたあとに呼ぶ:保存した塗りを本文に戻す(本文が書き直されていたら、同じ文字列を探して付け直す)
+function hlPage(){hlHide();hlDrag=null;hlBlocks=[];
+  document.querySelectorAll('#reader .rtext [data-bi]').forEach(el=>{hlBlocks[+el.dataset.bi]={el,text:el.textContent,runs:[]};});
+  const all=hlBlocks.filter(Boolean),saved=hlLoad()[pk(rd.ci,rd.p)]||[];
+  saved.forEach(([bi,s,e,c,t])=>{if(HL_COLS.indexOf(c)<0||!t)return;let b=hlBlocks[bi];
+    if(!(b&&b.text.slice(s,e)===t)){let k=b?b.text.indexOf(t):-1;
+      if(k<0){b=all.find(x=>x.text.indexOf(t)>=0);k=b?b.text.indexOf(t):-1;}
+      if(k<0)return;s=k;e=k+t.length;}
+    b.runs.push([s,e,c]);});
+  all.forEach(b=>{b.runs=hlRunsOf(hlArr(b));hlPaint(b,null);});}
+function hlStore(){const H=hlLoad(),k=pk(rd.ci,rd.p),out=[];
+  hlBlocks.forEach((b,bi)=>{if(b)b.runs.forEach(([s,e,c])=>out.push([bi,s,e,c,b.text.slice(s,e)]));});
+  if(out.length)H[k]=out;else delete H[k];try{localStorage.setItem(HL_KEY,JSON.stringify(H));}catch(e){}}
+// ranges = [{bi,s,e}]、c = 色(null で消す)
+function hlApply(ranges,c){ranges.forEach(r=>{const b=hlBlocks[r.bi];if(!b)return;const a=hlArr(b);for(let i=r.s;i<r.e&&i<a.length;i++)a[i]=c;b.runs=hlRunsOf(a);});
+  hlStore();hlBlocks.forEach(b=>{if(b)hlPaint(b,null);});}
+// 画面上の位置(DOM)→ 段落番号と、その段落の何文字目か
+function hlOff(node,off){if(!node)return null;const el=(node.nodeType===1?node:node.parentNode);const bl=el&&el.closest&&el.closest('#reader .rtext [data-bi]');if(!bl)return null;
+  const r=document.createRange();try{r.setStart(bl,0);r.setEnd(node,off);}catch(e){return null;}return {bi:+bl.dataset.bi,o:r.toString().length};}
+function hlCaret(x,y){let n,o;
+  if(document.caretPositionFromPoint){const p=document.caretPositionFromPoint(x,y);if(!p)return null;n=p.offsetNode;o=p.offset;}
+  else if(document.caretRangeFromPoint){const r=document.caretRangeFromPoint(x,y);if(!r)return null;n=r.startContainer;o=r.startOffset;}
+  else return null;return hlOff(n,o);}
+// 2点の間(段落をまたいでもよい)を、段落ごとの範囲にする
+function hlSpan(a,f){if(f.bi<a.bi||(f.bi===a.bi&&f.o<a.o))[a,f]=[f,a];const out=[];
+  hlBlocks.forEach((b,bi)=>{if(!b||bi<a.bi||bi>f.bi)return;const s=bi===a.bi?a.o:0,e=bi===f.bi?f.o:b.text.length;if(e>s)out.push({bi,s,e});});return out;}
+function hlSelRanges(){const sel=getSelection();if(!sel||sel.isCollapsed||!sel.rangeCount)return [];const R=sel.getRangeAt(0),out=[];
+  hlBlocks.forEach((b,bi)=>{if(!b||!R.intersectsNode(b.el))return;
+    const s=b.el.contains(R.startContainer)?(hlOff(R.startContainer,R.startOffset)||{o:0}).o:0;
+    const e=b.el.contains(R.endContainer)?(hlOff(R.endContainer,R.endOffset)||{o:b.text.length}).o:b.text.length;
+    if(e>s)out.push({bi,s,e});});return out;}
+// ---- 色のボタン(文字を選んだとき・塗った所をタップしたとき)----
+function hlHide(){hlTarget=null;const p=$('hlPop');if(p)p.hidden=true;}
+function hlShow(rect,ranges,onMark){hlTarget=ranges;const p=$('hlPop');p.classList.toggle('onmark',!!onMark);p.hidden=false;
+  const w=p.offsetWidth,h=p.offsetHeight;let top=rect.bottom+10;if(top+h>innerHeight-8)top=Math.max(8,rect.top-h-10);
+  p.style.top=top+'px';p.style.left=Math.max(8,Math.min(innerWidth-w-8,rect.left+rect.width/2-w/2))+'px';}
+let hlSelT=0;
+document.addEventListener('selectionchange',()=>{if(hlPen||$('read').hidden)return;clearTimeout(hlSelT);hlSelT=setTimeout(()=>{
+  const rs=hlSelRanges();if(rs.length){const sel=getSelection();hlShow(sel.getRangeAt(0).getBoundingClientRect(),rs,false);}
+  else if(hlTarget&&!$('hlPop').classList.contains('onmark'))hlHide();},250);});
+$('hlPop').addEventListener('pointerdown',e=>e.preventDefault());
+$('hlPop').addEventListener('click',e=>{const bt=e.target.closest('button');if(!bt||!hlTarget)return;const c=bt.dataset.c;
+  hlApply(hlTarget,c==='x'?null:c);try{getSelection().removeAllRanges();}catch(err){}hlHide();});
+$('reader').addEventListener('click',e=>{if(hlPen)return;const mk=e.target.closest('mark.hl');const sel=getSelection();
+  if(!mk||(sel&&!sel.isCollapsed))return;const bl=mk.closest('[data-bi]');if(!bl)return;
+  hlShow(mk.getBoundingClientRect(),[{bi:+bl.dataset.bi,s:+mk.dataset.s,e:+mk.dataset.e}],true);});
+document.addEventListener('pointerdown',e=>{if(!$('hlPop').hidden&&!e.target.closest('#hlPop')&&!e.target.closest('mark.hl'))setTimeout(()=>{if(!hlSelRanges().length)hlHide();},0);});
+$('reader').addEventListener('scroll',()=>{if(hlTarget)hlHide();},{capture:true,passive:true});
+// ---- ペンモード ----
+function hlSetPen(on){hlPen=on;hlHide();hlDrag=null;$('read').classList.toggle('pen',on);$('penBtn').setAttribute('aria-pressed',on?'true':'false');$('penBar').hidden=!on;
+  if(on){try{getSelection().removeAllRanges();}catch(e){}}hlPenCols();}
+function hlPenCols(){const c=hlCol();[...$('penBar').querySelectorAll('button[data-c]')].forEach(b=>b.classList.toggle('on',b.dataset.c===c));}
+$('penBtn').addEventListener('click',()=>hlSetPen(!hlPen));
+$('penBar').addEventListener('click',e=>{const bt=e.target.closest('button');if(!bt)return;
+  if(bt.id==='penDone'){hlSetPen(false);return;}try{localStorage.setItem('neuro-hl-col',bt.dataset.c);}catch(err){}hlPenCols();});
+const hlIn=t=>t&&t.closest&&t.closest('#reader .rtext');
+document.addEventListener('selectstart',e=>{if(hlPen&&hlIn(e.target.nodeType===1?e.target:e.target.parentNode))e.preventDefault();});
+$('reader').addEventListener('contextmenu',e=>{if(hlPen&&hlIn(e.target))e.preventDefault();});
+$('reader').addEventListener('pointerdown',e=>{if(!hlPen||!e.isPrimary||e.button>0||!hlIn(e.target)||e.target.closest('button,input,label,.figref'))return;
+  const c=hlCaret(e.clientX,e.clientY);if(!c)return;if(e.pointerType==='mouse')e.preventDefault();
+  hlDrag={a:c,f:c,x:e.clientX,y:e.clientY,moved:false,mk:e.target.closest('mark.hl'),id:e.pointerId};
+  try{$('reader').setPointerCapture(e.pointerId);}catch(err){}});
+function hlDraw(){const col=hlCol(),c=col==='x'?null:col,rs=hlDrag.moved?hlSpan(hlDrag.a,hlDrag.f):[];
+  hlBlocks.forEach((b,bi)=>{if(!b)return;const r=rs.find(x=>x.bi===bi);hlPaint(b,r?{s:r.s,e:r.e,c}:null);});}
+$('reader').addEventListener('pointermove',e=>{if(!hlDrag||e.pointerId!==hlDrag.id)return;
+  if(!hlDrag.moved&&Math.hypot(e.clientX-hlDrag.x,e.clientY-hlDrag.y)<4)return;hlDrag.moved=true;
+  const c=hlCaret(e.clientX,e.clientY);if(c)hlDrag.f=c;hlDraw();});
+function hlEnd(e,cancel){if(!hlDrag||e.pointerId!==hlDrag.id)return;const d=hlDrag;hlDrag=null;const col=hlCol();
+  if(cancel){hlBlocks.forEach(b=>{if(b)hlPaint(b,null);});return;}
+  if(d.moved){const rs=hlSpan(d.a,d.f);if(rs.length){hlApply(rs,col==='x'?null:col);return;}}
+  else if(d.mk&&col==='x'){const bl=d.mk.closest('[data-bi]');if(bl){hlApply([{bi:+bl.dataset.bi,s:+d.mk.dataset.s,e:+d.mk.dataset.e}],null);return;}}
+  hlBlocks.forEach(b=>{if(b)hlPaint(b,null);});}
+$('reader').addEventListener('pointerup',e=>hlEnd(e,false));
+$('reader').addEventListener('pointercancel',e=>hlEnd(e,true));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('read').hidden){if(!$('hlPop').hidden)hlHide();else if(hlPen)hlSetPen(false);}});
+// 別の端末で塗った分が届いたら、開いているページを描き直す
+window.addEventListener('neuro-sync',e=>{const ks=(e.detail&&e.detail.keys)||[];if(ks.indexOf(HL_KEY)>=0&&!$('read').hidden&&!hlDrag&&!hlTarget)hlPage();});
+$('rBack').addEventListener('click',hlHide);
 $('card').addEventListener('click',flip);
 $('btnShow').addEventListener('click',flip);
 $('btnAgain').addEventListener('click',()=>verdict(false));
