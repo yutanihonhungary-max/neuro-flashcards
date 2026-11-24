@@ -36,6 +36,8 @@ for i,d in enumerate(D):
         d['lesson'],d['terms'],d['facts']=parse(p)
 import sys; sys.path.insert(0,APP); import linkmap
 print('links',dict(linkmap.assign(D)))
+import figmap
+print('figs',dict(figmap.assign(D,SRC/'figures.txt')))
 data=json.dumps(D,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')
 h=h[:a]+data+h[b:]
 def rep(o,n,cnt=1):
@@ -176,6 +178,38 @@ rep('<div class="chapters" id="chapters"></div>','<button class="hlvbtn" id="hlv
 rep('<main class="wrap" id="study" hidden>','<main class="wrap" id="hlv" hidden>\n  <div class="bar"><button class="back" id="hlvBack">← 単元一覧</button><div class="where"><b>🖍 塗った所</b> <span id="hlvSum"></span></div></div>\n  <div class="hlvf"><select id="hlvDay" aria-label="Day"></select>\n    <div class="hlvcols" id="hlvCols"><button type="button" data-c="" class="all">全色</button><button type="button" data-c="y" class="sw hl-y" aria-label="黄"></button><button type="button" data-c="g" class="sw hl-g" aria-label="緑"></button><button type="button" data-c="p" class="sw hl-p" aria-label="ピンク"></button><button type="button" data-c="b" class="sw hl-b" aria-label="青"></button></div>\n    <label class="hlvctx"><input type="checkbox" id="hlvCtx">前後の文も表示</label></div>\n  <div id="hlvList" class="hlvlist"></div>\n</main>\n<main class="wrap" id="study" hidden>')
 rep('</style>','.hlvbtn{display:flex;align-items:center;gap:8px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;color:var(--ink);font:inherit;font-size:.95rem;cursor:pointer;text-align:left}.hlvbtn small{margin-left:auto;color:var(--muted);font-size:.8rem}\n#hlv .where b{font-size:1rem}#hlv #hlvSum{color:var(--muted);font-size:.85rem}\n.hlvf{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px}\n.hlvf select{font:inherit;font-size:.88rem;border:1px solid var(--line);border-radius:8px;padding:6px 8px;background:var(--surface);color:var(--ink);max-width:100%;flex:1 1 200px}\n.hlvcols{display:flex;gap:6px;align-items:center}.hlvcols .sw{width:28px;height:28px}.hlvcols .all{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;font-size:.8rem;font-weight:700;cursor:pointer}\n.hlvcols button.on{outline:3px solid var(--violet);outline-offset:2px}\n.hlvctx{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted);cursor:pointer}.hlvctx input{width:18px;height:18px;accent-color:var(--violet);margin:0}\n.hlvlist{display:flex;flex-direction:column;gap:10px}.hlvlist h2{font-family:var(--display);font-size:1.1rem;margin:10px 2px 0}\n.hlvpg{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 14px 12px;display:flex;flex-direction:column;gap:2px}\n.hlvh{display:flex;align-items:baseline;gap:10px;background:none;border:none;border-bottom:1px solid var(--line);padding:8px 0;margin-bottom:4px;font:inherit;font-weight:700;color:var(--ink);text-align:left;cursor:pointer}.hlvh small{margin-left:auto;flex:none;color:var(--violet);font-size:.78rem}\n.hli{display:block;width:100%;background:none;border:none;border-radius:8px;padding:6px 4px;font:inherit;font-size:.98rem;line-height:1.8;color:var(--ink);text-align:left;cursor:pointer;overflow-wrap:anywhere}.hli:hover{background:var(--paper)}.hli mark.hl{background:var(--hl);color:inherit;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}.hli.ctx{color:var(--muted)}.hli.ctx mark.hl{color:var(--ink)}\n.hlvnone{color:var(--muted);text-align:center;padding:24px 8px}\n.rtext [data-bi]{transition:background .4s}.rtext .hlflash{background:var(--violet-soft);border-radius:6px}\n</style>')
 rep("$('rBack').addEventListener('click',hlHide);",open(f'{APP}/hlview.js',encoding='utf-8').read().rstrip('\n')+"\n$('rBack').addEventListener('click',hlHide);")
+# ---- 図の再表示(本文の用語で、ほかのページの図を自動で出す。割り当ては src/figmap.py と src/figures.txt)
+rep("if(pg.b.some(l=>/^!img\\s/.test(l))){","if(pg.b.some(l=>/^!img\\s/.test(l))||(pg.ax&&pg.ax.length)){")
+rep("pg.b.forEach((line,bi)=>{let m;",r"""const addAuto=a=>{const k=figs.length;figs.push({src:'../img/'+a.f,cap:a.c,auto:a});
+    const fp=document.createElement('p');fp.className='figref auto';fp.dataset.k=k;const bt=document.createElement('button');bt.type='button';bt.textContent='図'+(k+1);
+    bt.addEventListener('click',()=>dockShow(k,true));const fk=document.createElement('span');fk.className='fkey';fk.textContent='「'+a.k+'」';
+    const fo=document.createElement('span');fo.className='forig';fo.textContent=a.o+'の図';fp.append(bt,fk,fo,document.createElement('br'),document.createTextNode(a.c));tx.append(fp);};
+  pg.b.forEach((line,bi)=>{let m;(pg.ax||[]).forEach(a=>{if(a.at===bi){kind='';addAuto(a);}});""")
+rep("const figs=[];dockFigs=figs;","const figs=[];dockFigs=figs;dockSyncK=-1;")
+rep("b.textContent='図'+(k+1);b.addEventListener('click',()=>dockShow(k,true));tb.append(b);","b.textContent='図'+(k+1);if(f.auto){b.classList.add('auto');b.title='「'+f.auto.k+'」で表示('+f.auto.o+'の図)';}b.addEventListener('click',()=>dockShow(k,true));tb.append(b);")
+rep("$('zCap').textContent='図'+(k+1)+'  '+f.cap;","$('zCap').textContent='図'+(k+1)+'  '+f.cap+(f.auto?'('+f.auto.o+'の図)':'');")
+rep("$('dImg').addEventListener('click',()=>zoomOpen(dockCur));dockShow(0,false);","dockSwipe();dockShow(0,false);")
+# スクロールで図が切り替わるのは、本文の「図N」の位置を越えたときだけ(タブやスワイプで選んだ図を、少しスクロールしただけで戻さない)
+rep("if(k!==dockCur)dockShow(k,false);}","if(k!==dockSyncK){dockSyncK=k;if(k!==dockCur)dockShow(k,false);}}")
+rep("function syncDock(){",r"""let dockSyncK=-1;
+// 上の図の枠を左右にスワイプ(マウスならドラッグ)して、図を切り替える。動かさずに押したときは拡大。
+function dockSwipe(){const el=$('dImg'),im=el.querySelector('img');im.draggable=false;let sx=0,sy=0,id=null,moved=false;
+  el.addEventListener('pointerdown',e=>{id=e.pointerId;sx=e.clientX;sy=e.clientY;moved=false;});
+  el.addEventListener('pointermove',e=>{if(e.pointerId===id&&Math.abs(e.clientX-sx)>10)moved=true;});
+  el.addEventListener('pointerup',e=>{if(e.pointerId!==id)return;id=null;const dx=e.clientX-sx,dy=e.clientY-sy;
+    if(Math.abs(dx)>40&&Math.abs(dx)>1.5*Math.abs(dy)){moved=true;const n=dockCur+(dx<0?1:-1);if(n<0||n>=dockFigs.length){el.classList.remove('edge');void el.offsetWidth;el.classList.add('edge');return;}
+      im.classList.remove('sl','sr');void im.offsetWidth;im.classList.add(dx<0?'sl':'sr');dockShow(n,true);}});
+  el.addEventListener('pointercancel',()=>{id=null;});
+  el.addEventListener('click',()=>{if(moved){moved=false;return;}zoomOpen(dockCur);});}
+function syncDock(){""")
+rep('</style>',""".reader p.figref.auto{border:1px dashed var(--line);background:transparent}
+.figref .fkey{font-weight:700;color:var(--violet);margin-right:6px}.figref .forig{font-size:.78rem}
+.dtabs button.auto{border-style:dashed}
+.dimg{touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}.dimg img{-webkit-user-drag:none}
+.dimg img.sl{animation:dsl .22s ease-out}.dimg img.sr{animation:dsr .22s ease-out}.dimg.edge img{animation:dedge .25s ease-out}
+@keyframes dsl{from{transform:translateX(28px);opacity:.3}to{transform:none;opacity:1}}@keyframes dsr{from{transform:translateX(-28px);opacity:.3}to{transform:none;opacity:1}}@keyframes dedge{30%{transform:translateX(6px)}60%{transform:translateX(-4px)}}
+@media (prefers-reduced-motion:reduce){.dimg img.sl,.dimg img.sr,.dimg.edge img{animation:none}}
+</style>""")
 open(ROOT/'day'/'index.html','w',encoding='utf-8').write(h)
 # chapter version typo fixes
 ci=open(ROOT/'index.html',encoding='utf-8').read()
