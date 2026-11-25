@@ -79,7 +79,6 @@ function pick(){const now=Date.now(),T=today(now),noNew=cur.si==='rev';const L=[
   const notLast=a=>a.find(c=>cid(c)!==sess.last);
   return notLast(L)||notLast(R)||notLast(N)||notLast(A)||L[0]||R[0]||N[0]||A[0]||null;}
 
-const DONE_KEY='neuro-done-day';
 const PROG_KEY='neuro-prog-day', LAST_KEY='neuro-last-day';
 function progKey(ci,si,star){return ci+'|'+si+((star==null?starOnly:star)?'|s':'');}
 function hashFull(a){let h=5381;const s=a.map(c=>c.q).join('\n');for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return h;}
@@ -144,29 +143,8 @@ function renderHome(){
     det.appendChild(units); box.appendChild(det);
   });
   $('total').textContent=total;
-  addChecks();
   addProg();
 }
-function addChecks(){
-  const D=loadDone();
-  document.querySelectorAll('#chapters details').forEach((det,ci)=>{
-    const btns=[...det.querySelectorAll('.units .unit')]; let n=0,k=0;
-    btns.forEach((b,bi)=>{
-      const id=ci+'-'+bi, row=document.createElement('div'); row.className='urow';
-      const lab=document.createElement('label'); lab.className='chk';
-      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!D[id];
-      cb.setAttribute('aria-label',b.firstChild.textContent.replace(/^\d/,'')+' 終わった');
-      cb.addEventListener('change',()=>{const S=loadDone(); if(cb.checked)S[id]=1; else delete S[id]; saveDone(S); row.classList.toggle('done',cb.checked); prog();});
-      lab.appendChild(cb); b.replaceWith(row); row.append(lab,b); row.classList.toggle('done',cb.checked);
-    });
-    const sum=det.querySelector('summary'), p=document.createElement('span'); p.className='prog'; sum.insertBefore(p,sum.lastChild);
-    function prog(){const cs=[...det.querySelectorAll('.chk input')], c=cs.filter(x=>x.checked).length;
-      p.textContent=c?'✓ '+c+'/'+cs.length:''; det.classList.toggle('done',c>0&&c===cs.length);}
-    prog();
-  });
-}
-function loadDone(){try{return JSON.parse(localStorage.getItem(DONE_KEY)||'{}')||{};}catch(e){return {};}}
-function saveDone(S){try{localStorage.setItem(DONE_KEY,JSON.stringify(S));}catch(e){}}
 function mix(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function start(ci,si,cram){
   full=cardsOf(ci,si); if(!full.length) return;

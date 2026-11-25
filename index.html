@@ -107,13 +107,6 @@ summary::-webkit-details-marker{display:none}
 .switch{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;align-self:flex-start}
 .switch a{padding:6px 16px;border-radius:999px;font-size:.9rem;color:var(--muted);text-decoration:none;font-weight:600}
 .switch a[aria-current="page"]{background:var(--violet-soft);color:var(--violet)}
-.urow{display:flex;align-items:center;gap:6px}
-.urow .unit{flex:1;min-width:0}
-.chk{flex:none;width:40px;height:40px;display:flex;align-items:center;justify-content:center;margin:-4px -4px -4px -6px;cursor:pointer}
-.chk input{width:22px;height:22px;accent-color:var(--ok);margin:0;cursor:pointer}
-.urow.done .unit{opacity:.5}
-.prog{font-size:.78rem;font-weight:700;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
-details.done .prog,details.done .num{color:var(--ok)}
 .resume{display:flex;flex-direction:column;gap:4px;width:100%;text-align:left;background:var(--violet-soft);border:1px solid var(--violet);border-radius:14px;padding:12px 16px;cursor:pointer;color:var(--ink)}
 .resume b{font-size:.75rem;letter-spacing:.08em;color:var(--violet)}
 .resume span{font-weight:700;line-height:1.45}
@@ -191,10 +184,8 @@ function renderHome(){
     det.appendChild(units); box.appendChild(det);
   });
   $('total').textContent=total;
-  addChecks();
   addProg();
 }
-const DONE_KEY='neuro-done-chapter';
 const PROG_KEY='neuro-prog-chapter', LAST_KEY='neuro-last-chapter';
 function progKey(ci,si,star){return ci+'|'+si+((star==null?starOnly:star)?'|s':'');}
 function hashFull(a){let h=5381;const s=a.map(c=>c.q).join('\n');for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return h;}
@@ -221,26 +212,6 @@ function renderResume(){const box=$('resume');const L=loadLast();if(!L){box.hidd
 function resumeLast(){const L=loadLast();if(!L)return;
   if(L.type==='deck'){if(!!L.star!==starOnly){starOnly=!!L.star;$('optStar').setAttribute('aria-pressed',starOnly);}start(L.ci,L.si);}
   else if(L.type==='read'&&typeof openReader==='function'){openReader(L.ci,L.p);}}
-function addChecks(){
-  const D=loadDone();
-  document.querySelectorAll('#chapters details').forEach((det,ci)=>{
-    const btns=[...det.querySelectorAll('.units .unit')]; let n=0,k=0;
-    btns.forEach((b,bi)=>{
-      const id=ci+'-'+bi, row=document.createElement('div'); row.className='urow';
-      const lab=document.createElement('label'); lab.className='chk';
-      const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=!!D[id];
-      cb.setAttribute('aria-label',b.firstChild.textContent.replace(/^\d/,'')+' 終わった');
-      cb.addEventListener('change',()=>{const S=loadDone(); if(cb.checked)S[id]=1; else delete S[id]; saveDone(S); row.classList.toggle('done',cb.checked); prog();});
-      lab.appendChild(cb); b.replaceWith(row); row.append(lab,b); row.classList.toggle('done',cb.checked);
-    });
-    const sum=det.querySelector('summary'), p=document.createElement('span'); p.className='prog'; sum.insertBefore(p,sum.lastChild);
-    function prog(){const cs=[...det.querySelectorAll('.chk input')], c=cs.filter(x=>x.checked).length;
-      p.textContent=c?'✓ '+c+'/'+cs.length:''; det.classList.toggle('done',c>0&&c===cs.length);}
-    prog();
-  });
-}
-function loadDone(){try{return JSON.parse(localStorage.getItem(DONE_KEY)||'{}')||{};}catch(e){return {};}}
-function saveDone(S){try{localStorage.setItem(DONE_KEY,JSON.stringify(S));}catch(e){}}
 function mix(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function start(ci,si){
   full=cardsOf(ci,si); if(!full.length) return;
@@ -320,21 +291,9 @@ document.addEventListener('keydown',e=>{
   else if(e.key==='ArrowRight') verdict(true);
   else if(e.key==='ArrowLeft') verdict(false);
 });
-// 別の端末の記録が届いたら一覧を描き直す(sync.js)
-let touched=false; $('chapters').addEventListener('click',e=>{if(e.target.closest('summary'))touched=true;});
-window.addEventListener('neuro-sync',()=>{if(!$('home').hidden){renderHome(); if(!touched)openCurrent(false);}});
+// 別の端末の記録が届いたら一覧を描き直す(sync.js)。単元は開いたときは全部閉じておき、描き直しても開け閉めはそのまま保つ。
+window.addEventListener('neuro-sync',()=>{if(!$('home').hidden)renderHome();});
 renderHome();
-// 開いたときは、前回の続きの単元を開く(その単元の印が全部ついていれば、次のまだ終わっていない単元)。
-// 記録がなければ、最初のまだ終わっていない単元。下の方なら見える位置までスクロールする。
-function openCurrent(scroll){
-  const ds=[...document.querySelectorAll('#chapters details')]; if(!ds.length) return;
-  const L=loadLast(); let i=(L&&Number.isInteger(L.ci)&&ds[L.ci])?L.ci:0;
-  while(i<ds.length-1&&ds[i].classList.contains('done')) i++;
-  ds.forEach((d,k)=>{d.open=k===i;});
-  if(scroll){const r=ds[i].querySelector('summary').getBoundingClientRect();
-    if(r.top>innerHeight*0.6) window.scrollTo({top:r.top+scrollY-12});}
-}
-openCurrent(true);
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js',{scope:'./'}).catch(()=>{});</script>
 </body>
