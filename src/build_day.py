@@ -19,7 +19,7 @@ for d in D:
             for k in ('q','a','n'):
                 if k in c: c[k]=fix(c[k])
 def parse(path):
-    lesson=[];terms=[];facts=[];quiz={};qh=None;mode=None
+    lesson=[];terms=[];facts=[];quiz={};nolink=set();qh=None;mode=None
     for raw in open(path,encoding='utf-8').read().split('\n'):
         line=raw.rstrip()
         if line.startswith('@'): mode=line[1:].strip(); continue
@@ -28,6 +28,7 @@ def parse(path):
             elif lesson and line.strip(): lesson[-1]['b'].append(line.strip())
         elif mode=='quiz':
             if line.startswith('## '): qh=line[3:].strip(); quiz.setdefault(qh,[])
+            elif line.strip()=='!nolink': nolink.add(qh)
             elif '|' in line and not line.startswith('#'):
                 q,ans=[x.strip() for x in line.split('|',1)]; quiz[qh].append({'q':q,'a':ans})
         elif mode in('term','fact') and '|' in line:
@@ -35,6 +36,7 @@ def parse(path):
             (terms if mode=='term' else facts).append({'q':q,'a':ans})
     for pg in lesson:
         if pg['h'] in quiz: pg['qown']=quiz.pop(pg['h'])
+        if pg['h'] in nolink: pg['nolink']=True
     assert not quiz, ('quiz heading not found', path, list(quiz))
     return lesson,terms,facts
 for i,d in enumerate(D):

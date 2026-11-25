@@ -48,8 +48,8 @@ def best_page(card, lesson, index, skip_first=True):
     scores = []
     for i, (v, n) in enumerate(vecs):
         s = sum(x * v.get(w, 0) for w, x in qv.items()) / (qn * n)
-        if lesson[i].get('qown'):
-            s = 0  # 確認問題を専用に書いた補足のページ(発生など)にはリンクしない
+        if lesson[i].get('nolink'):
+            s = 0  # 補足のページ(発生など)にはリンクしない
         if skip_first and lesson[i]['h'] == '今日学ぶこと':
             s *= 0.85  # overview page: link there only when it clearly fits best
         scores.append(s)
