@@ -7,7 +7,7 @@
 const URL_ = 'https://luddhhtgzqmesxlosgok.supabase.co/rest/v1/rpc/';
 const KEY  = 'sb_publishable_OZQIVjV5kMPM6WjP-Qh2qw_ezUGPPLj';
 // 同期するキー。図の幅・図を畳むかなど、画面の大きさで変わる設定は端末ごとのまま。
-const SYNC  = ['neuro-srs-day','neuro-prog-day','neuro-last-day','neuro-readpos-day','neuro-hl-day',
+const SYNC  = ['neuro-srs-day','neuro-prog-day','neuro-last-day','neuro-readpos-day','neuro-hl-day','neuro-quiz-day',
                'neuro-prog-chapter','neuro-last-chapter'];
 const WHOLE = new Set(['neuro-last-day','neuro-last-chapter']);   // 中身を分けずに丸ごと1項目として扱うキー
 const CODE_KEY = 'nsync-code', META_KEY = 'nsync-meta';

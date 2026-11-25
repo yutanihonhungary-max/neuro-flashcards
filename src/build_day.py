@@ -19,16 +19,23 @@ for d in D:
             for k in ('q','a','n'):
                 if k in c: c[k]=fix(c[k])
 def parse(path):
-    lesson=[];terms=[];facts=[];mode=None
+    lesson=[];terms=[];facts=[];quiz={};qh=None;mode=None
     for raw in open(path,encoding='utf-8').read().split('\n'):
         line=raw.rstrip()
         if line.startswith('@'): mode=line[1:].strip(); continue
         if mode=='lesson':
             if line.startswith('## '): lesson.append({'h':line[3:].strip(),'b':[]})
             elif lesson and line.strip(): lesson[-1]['b'].append(line.strip())
+        elif mode=='quiz':
+            if line.startswith('## '): qh=line[3:].strip(); quiz.setdefault(qh,[])
+            elif '|' in line and not line.startswith('#'):
+                q,ans=[x.strip() for x in line.split('|',1)]; quiz[qh].append({'q':q,'a':ans})
         elif mode in('term','fact') and '|' in line:
             q,ans=[x.strip() for x in line.split('|',1)]
             (terms if mode=='term' else facts).append({'q':q,'a':ans})
+    for pg in lesson:
+        if pg['h'] in quiz: pg['qown']=quiz.pop(pg['h'])
+    assert not quiz, ('quiz heading not found', path, list(quiz))
     return lesson,terms,facts
 for i,d in enumerate(D):
     p=f'{APP}/content/d{i+1:02d}.txt'
@@ -36,6 +43,8 @@ for i,d in enumerate(D):
         d['lesson'],d['terms'],d['facts']=parse(p)
 import sys; sys.path.insert(0,APP); import linkmap
 print('links',dict(linkmap.assign(D)))
+import quizmap
+print('quiz',dict(quizmap.assign(D)))
 import figmap
 print('figs',dict(figmap.assign(D,SRC/'figures.txt')))
 data=json.dumps(D,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')
@@ -209,6 +218,44 @@ rep('</style>',""".reader p.figref.auto{border:1px dashed var(--line);background
 .dimg img.sl{animation:dsl .22s ease-out}.dimg img.sr{animation:dsr .22s ease-out}.dimg.edge img{animation:dedge .25s ease-out}
 @keyframes dsl{from{transform:translateX(28px);opacity:.3}to{transform:none;opacity:1}}@keyframes dsr{from{transform:translateX(-28px);opacity:.3}to{transform:none;opacity:1}}@keyframes dedge{30%{transform:translateX(6px)}60%{transform:translateX(-4px)}}
 @media (prefers-reduced-motion:reduce){.dimg img.sl,.dimg img.sr,.dimg.edge img{animation:none}}
+</style>""")
+# ---- 「読む」の各ページの最後の確認問題(チェックボックスだけ。暗記の予定は付けない。割り当ては src/quizmap.py)
+rep("  if(figs.length){const tb=$('dTabs')","  quizRender(tx);\n  if(figs.length){const tb=$('dTabs')")
+rep("function renderPage(){",r"""const QZK='neuro-quiz-day';
+function qzLoad(){try{return JSON.parse(localStorage.getItem(QZK)||'{}')||{};}catch(e){return {};}}
+function quizRender(tx){const qz=DECKS[rd.ci].lesson[rd.p].qz;if(!qz||!qz.length)return;const ci=rd.ci,st=qzLoad();
+  const sec=document.createElement('section');sec.className='quiz';const hd=document.createElement('div');hd.className='qzhd';
+  const ht=document.createElement('b');ht.textContent='確認問題';const hc=document.createElement('span');hc.className='qzc';hd.append(ht,hc);
+  const all=document.createElement('button');all.type='button';all.className='qzall';hd.append(all);sec.append(hd);
+  const items=[];
+  const count=()=>{const n=items.filter(x=>x.cb.checked).length;hc.textContent='✓ '+n+' / '+items.length;sec.classList.toggle('done',n===items.length);};
+  qz.forEach(x=>{const key=ci+'|'+x.q;const row=document.createElement('div');row.className='qi';
+    const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!(st[key]&&st[key].c);cb.setAttribute('aria-label','できた');
+    const body=document.createElement('div');body.className='qb';const q=document.createElement('button');q.type='button';q.className='qq';
+    const tg=document.createElement('span');tg.className='qt';tg.textContent=x.t;q.append(tg,document.createTextNode(x.q));
+    const a=document.createElement('div');a.className='qa';a.textContent=x.a;a.hidden=true;
+    q.addEventListener('click',()=>{a.hidden=!a.hidden;row.classList.toggle('open',!a.hidden);});
+    cb.addEventListener('change',()=>{const s2=qzLoad();s2[key]={c:cb.checked?1:0,t:Date.now()};try{localStorage.setItem(QZK,JSON.stringify(s2));}catch(e){}row.classList.toggle('ok',cb.checked);count();});
+    row.classList.toggle('ok',cb.checked);body.append(q,a);row.append(cb,body);sec.append(row);items.push({cb,a,row});});
+  const allOpen=()=>items.every(x=>!x.a.hidden);
+  const lab=()=>{all.textContent=allOpen()?'答えを隠す':'答えを全部見る';};
+  all.addEventListener('click',()=>{const o=!allOpen();items.forEach(x=>{x.a.hidden=!o;x.row.classList.toggle('open',o);});lab();});
+  sec.addEventListener('click',e=>{if(e.target.closest('.qq'))lab();});
+  const nt=document.createElement('p');nt.className='qznote';nt.textContent='問いを押すと答えが出ます。答えられたらチェック。';sec.append(nt);
+  count();lab();tx.append(sec);}
+function renderPage(){""")
+rep('</style>',""".quiz{margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:12px 12px 8px;background:var(--paper);display:flex;flex-direction:column;gap:8px}
+.quiz.done{border-color:var(--ok)}
+.qzhd{display:flex;align-items:center;gap:10px}.qzhd b{font-size:1rem}.qzc{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}.quiz.done .qzc{color:var(--ok);font-weight:700}
+.qzall{margin-left:auto;border:1px solid var(--violet);background:var(--surface);color:var(--violet);border-radius:999px;padding:3px 12px;font-size:.78rem;font-weight:700;cursor:pointer}
+.qi{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.qi input{width:22px;height:22px;margin:2px 0 0;flex:none;accent-color:var(--ok);cursor:pointer}
+.qi.ok{border-color:var(--ok)}
+.qb{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.qq{all:unset;cursor:pointer;font-size:.95rem;line-height:1.6;overflow-wrap:anywhere}.qq:focus-visible{outline:2px solid var(--violet);border-radius:4px}
+.qt{display:inline-block;font-size:.7rem;font-weight:700;color:var(--violet);background:var(--violet-soft);border-radius:6px;padding:0 6px;margin-right:6px;vertical-align:1px}
+.qa{font-size:.92rem;line-height:1.65;color:var(--ink,inherit);border-top:1px dashed var(--line);padding-top:6px;overflow-wrap:anywhere}
+.qznote{font-size:.75rem!important;color:var(--muted);margin:0!important;line-height:1.5!important}
 </style>""")
 open(ROOT/'day'/'index.html','w',encoding='utf-8').write(h)
 # chapter version typo fixes
