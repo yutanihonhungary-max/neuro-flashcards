@@ -44,7 +44,7 @@ def rep(o,n,cnt=1):
     global h
     assert o in h,o[:60]; h=h.replace(o,n,cnt)
 # ---- copy
-rep('21日の学習ルートの順に並んでいます。その日のDayを開いて始めてください。','21日の学習ルートの順です。各Dayは「① 読む → ② 用語 → ③ 部品 → ④ まとめ」の順に進めると、知らない答えに出会わずに積み上げられます。')
+rep('その日の日付の下のDayを開いて始めてください。','その日の日付の下のDayを開いて始めてください。各Dayは「① 読む → ② 用語 → ③ 部品 → ④ まとめ」の順に進めると、知らない答えに出会わずに積み上げられます。')
 # ---- links from cards to reading pages
 rep("s.cards.forEach(c=>out.push({...c,sec:s.title}));","s.cards.forEach(c=>out.push({...c,sec:s.title,ci}));")
 rep('<div class="hint" id="hint">','<button class="toread" id="toRead" type="button" hidden></button>\n    <div class="hint" id="hint">')

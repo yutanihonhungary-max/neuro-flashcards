@@ -44,6 +44,14 @@ button:focus-visible,summary:focus-visible,.card:focus-visible{outline:3px solid
 [hidden]{display:none!important}
 h1{font-family:var(--display);font-size:1.6rem;line-height:1.3;margin:0;text-wrap:balance}
 .lede{color:var(--muted);margin:0;font-size:.92rem}
+.examline{font-weight:700;color:var(--violet);padding:4px 2px 2px}
+.dayhdr{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:14px 2px 2px;padding-top:8px;border-top:1px solid var(--line)}
+.dayhdr b{font-size:1rem}
+.dayhdr span{font-size:.8rem;color:var(--muted)}
+.dayhdr.past{opacity:.6}
+.dayhdr.today b{color:var(--violet)}
+.dayhdr .tbadge{background:var(--violet);color:var(--surface);border-radius:999px;padding:1px 10px;font-weight:700}
+.dayhdr .dnote{flex-basis:100%;font-size:.86rem;color:var(--ink,inherit)}
 .opts{display:flex;flex-wrap:wrap;gap:8px}
 .toggle{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;font-size:.9rem;display:flex;align-items:center;gap:8px}
 .toggle[aria-pressed="true"]{background:var(--violet-soft);border-color:var(--violet);color:var(--violet);font-weight:700}
@@ -145,7 +153,7 @@ summary::-webkit-details-marker{display:none}
 <main class="wrap" id="home">
   <nav class="switch" aria-label="版の切り替え"><a href="../">章別</a><a href="./" aria-current="page">Day別</a></nav>
   <h1>脳解剖学 単語帳 Day別</h1>
-  <p class="lede">Signorelli 口頭試験の一問一答 <span id="total"></span> 枚。21日の学習ルートの順に並んでいます。その日のDayを開いて始めてください。カードは Anki と同じ方式です。答えを見たら「もう一度・難しい・正解・簡単」で手応えを選ぶと、次に出す日が自動で決まります。各Dayの「復習」には、それより前の全Dayから今日が期限のカードが出ます。</p>
+  <p class="lede">Signorelli 口頭試験の一問一答 <span id="total"></span> 枚。12月11日の試験に合わせて、11/26 から15日間の日付ごとに並んでいます(1日に2つのDayを進める日があります)。その日の日付の下のDayを開いて始めてください。カードは Anki と同じ方式です。答えを見たら「もう一度・難しい・正解・簡単」で手応えを選ぶと、次に出す日が自動で決まります。各Dayの「復習」には、それより前の全Dayから今日が期限のカードが出ます。</p>
   <div class="opts">
     <button class="toggle" id="optStar" aria-pressed="false"><span class="dot"></span>過去問に出た ★ だけ</button>
     <button class="toggle" id="optShuffle" aria-pressed="false"><span class="dot"></span>順番を混ぜる</button>

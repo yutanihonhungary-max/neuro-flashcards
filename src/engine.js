@@ -107,10 +107,34 @@ function resumeLast(){const L=loadLast();if(!L)return;
   if(L.type==='deck'){if(!!L.star!==starOnly){starOnly=!!L.star;$('optStar').setAttribute('aria-pressed',starOnly);}start(L.ci,L.si);}
   else if(L.type==='read'&&typeof openReader==='function'){openReader(L.ci);}}
 function split(t){const m=t.match(/^(\d+)\s+([^(（]+)[(（]?([^)）]*)/);return m?{n:m[1],en:m[2].trim(),ja:m[3]||''}:{n:'',en:t,ja:''};}
+// 試験日に合わせた日付の割り当て(2026-11-25 に作り直し。11/26 開始、12/11 試験)。c は DECKS の番号(Day N なら N-1)
+const EXAM={d:'2026-12-11',w:'金'};
+const PLAN=[
+ {d:'2026-11-26',w:'木',c:[0]},{d:'2026-11-27',w:'金',c:[1]},{d:'2026-11-28',w:'土',c:[2]},{d:'2026-11-29',w:'日',c:[3]},
+ {d:'2026-11-30',w:'月',c:[4]},{d:'2026-12-01',w:'火',c:[5,6]},{d:'2026-12-02',w:'水',c:[7,8]},{d:'2026-12-03',w:'木',c:[9,10]},
+ {d:'2026-12-04',w:'金',c:[11,12]},{d:'2026-12-05',w:'土',c:[13,14]},{d:'2026-12-06',w:'日',c:[15,16]},{d:'2026-12-07',w:'月',c:[17,18]},
+ {d:'2026-12-08',w:'火',c:[],note:'予備日:遅れたDayの取り戻しと、各Dayの「復習」'},
+ {d:'2026-12-09',w:'水',c:[19]},{d:'2026-12-10',w:'木',c:[20]}];
+function dnum(iso){const [y,m,d]=iso.split('-').map(Number);return Math.floor(Date.UTC(y,m-1,d)/864e5);}
+function mdw(e){const [,m,d]=e.d.split('-').map(Number);return m+'/'+d+'('+e.w+')';}
 function renderHome(){
   const box=$('chapters'); const open=[...box.querySelectorAll('details')].map(d=>d.open); box.innerHTML='';
   let total=0;
-  DECKS.forEach((d,ci)=>{
+  const td=today(), left=dnum(EXAM.d)-td;
+  const ex=document.createElement('div');ex.className='examline';
+  ex.textContent=left>0?'試験 '+mdw(EXAM)+' まで あと '+left+' 日':left===0?'今日は試験の日 '+mdw(EXAM):'試験 '+mdw(EXAM)+' は終わりました';
+  box.appendChild(ex);
+  const placed=new Set(PLAN.flatMap(e=>e.c));
+  const order=[];PLAN.forEach((e,pi)=>{order.push({hdr:e,pi});e.c.forEach(ci=>order.push({ci}));});
+  DECKS.forEach((d,ci)=>{if(!placed.has(ci))order.push({ci});});
+  order.forEach(o=>{
+    if(o.hdr){const e=o.hdr,n=dnum(e.d),hd=document.createElement('div');
+      hd.className='dayhdr'+(n===td?' today':n<td?' past':'');
+      const b=document.createElement('b');b.textContent=mdw(e);const sp=document.createElement('span');sp.textContent=(o.pi+1)+'日目 / '+PLAN.length;
+      hd.append(b,sp);if(n===td){const t=document.createElement('span');t.className='tbadge';t.textContent='今日';hd.append(t);}
+      if(e.note){const nt=document.createElement('span');nt.className='dnote';nt.textContent=e.note;hd.append(nt);}
+      box.appendChild(hd);return;}
+    const ci=o.ci,d=DECKS[ci];
     const t=split(d.title), n=d.from?cardsOf(ci,null).length:(d.terms||[]).length+(d.facts||[]).length+own(ci,null).length; total+=d.from?own(ci,null).length:n;
     const det=document.createElement('details'); det.open=!!open[ci];
     const sum=document.createElement('summary');
