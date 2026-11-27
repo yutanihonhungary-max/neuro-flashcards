@@ -21,7 +21,8 @@ def tokens(text):
 
 
 def page_text(pg):
-    lines = [re.sub(r'^!img\s+\S+\s*\|\s*', '', l) for l in pg['b']]
+    lines = [re.sub(r'^!img\s+\S+\s*\|\s*', '', l) for l in pg['b']
+             if not l.startswith(('この Day の最後に「口頭で答える順番」', 'そのあとに、補足として発生'))]  # 「今日学ぶこと」の案内文は照合に使わない
     return (pg['h'] + '\n') * 2 + '\n'.join(lines)
 
 
@@ -63,7 +64,8 @@ MIN_SCORE = 0.06
 def assign(D):
     stats = Counter()
     for d in D:
-        lesson = d.get('lesson') or []
+        # 「口頭で答える順番」はほかのページのまとめなので、言葉の重みの計算にも入れない(入れると他のリンクがずれる)
+        lesson = [p for p in d.get('lesson') or [] if p['h'] != '口頭で答える順番']
         if not lesson:
             continue
         index = build_index(lesson)

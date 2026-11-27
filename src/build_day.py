@@ -19,7 +19,7 @@ for d in D:
             for k in ('q','a','n'):
                 if k in c: c[k]=fix(c[k])
 def parse(path):
-    lesson=[];terms=[];facts=[];quiz={};nolink=set();qh=None;mode=None
+    lesson=[];terms=[];facts=[];quiz={};nolink=set();supp=set();qh=None;mode=None
     for raw in open(path,encoding='utf-8').read().split('\n'):
         line=raw.rstrip()
         if line.startswith('@'): mode=line[1:].strip(); continue
@@ -29,6 +29,7 @@ def parse(path):
         elif mode=='quiz':
             if line.startswith('## '): qh=line[3:].strip(); quiz.setdefault(qh,[])
             elif line.strip()=='!nolink': nolink.add(qh)
+            elif line.strip()=='!supp': supp.add(qh)
             elif '|' in line and not line.startswith('#'):
                 q,ans=[x.strip() for x in line.split('|',1)]; quiz[qh].append({'q':q,'a':ans})
         elif mode in('term','fact') and '|' in line:
@@ -37,7 +38,10 @@ def parse(path):
     for pg in lesson:
         if pg['h'] in quiz: pg['qown']=quiz.pop(pg['h'])
         if pg['h'] in nolink: pg['nolink']=True
+        if pg['h'] in supp: pg['supp']=True
+    quiz={k:v for k,v in quiz.items() if v or k not in nolink|supp}  # 印だけの見出しは問いなし
     assert not quiz, ('quiz heading not found', path, list(quiz))
+    assert supp<={p['h'] for p in lesson}, ('supp heading not found', path)
     return lesson,terms,facts
 for i,d in enumerate(D):
     p=f'{APP}/content/d{i+1:02d}.txt'
@@ -267,6 +271,9 @@ rep('</style>',""".quiz{margin-top:18px;border:1px solid var(--line);border-radi
 .qznote{font-size:.75rem!important;color:var(--muted);margin:0!important;line-height:1.5!important}
 </style>""")
 rep("$('card').addEventListener('click',flip);",open(f'{APP}/oral.js',encoding='utf-8').read().rstrip('\n')+"\n$('card').addEventListener('click',flip);")
+# ---- 補足(発生)と「口頭で答える順番」のページに、見出しの上の帯を付ける(2026-11-27)
+rep("tx.append(h2);","tx.append(h2);if(pg.supp||pg.h==='口頭で答える順番'){const bd=document.createElement('div');bd.className='pbadge'+(pg.supp?' supp':' ans');bd.textContent=pg.supp?'補足:発生 ・ 過去問では聞かれていない。時間がなければ後回しでよい':'試験での答え方 ・ 過去の口頭試験の質問ごとに、話す順番';tx.insertBefore(bd,h2);}")
+rep('</style>','.pbadge{font-size:.75rem;font-weight:700;border-radius:8px;padding:4px 10px;margin:0 0 8px;display:inline-block}.pbadge.supp{background:var(--paper);color:var(--muted);border:1px dashed var(--line)}.pbadge.ans{background:var(--violet-soft);color:var(--violet)}\n</style>')
 open(ROOT/'day'/'index.html','w',encoding='utf-8').write(h)
 # chapter version typo fixes
 ci=open(ROOT/'index.html',encoding='utf-8').read()
