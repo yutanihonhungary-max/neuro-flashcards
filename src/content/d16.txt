@@ -41,6 +41,9 @@
 7. C7 communicating segment(交通部):後交通動脈が出る所から、内頸動脈が2本に分かれる先端まで。
 海綿静脈洞部と床突起部のあたりで、内頸動脈は S の字に曲がる。この部分を、形から carotid siphon(頸動脈サイフォン)という。
 錐体部では、細い枝(頸動脈鼓室動脈、翼突管動脈)を出すことがある。海綿静脈洞部では、下垂体と周りの硬膜を養う細い枝(髄膜下垂体動脈幹など)を出す。
+海綿静脈洞部の枝は、主に2本の幹。
+- meningohypophyseal trunk(髄膜下垂体動脈幹):さらに3本に分かれる。inferior hypophyseal artery(下下垂体動脈:下垂体の後葉へ)、dorsal meningeal artery(背側髄膜動脈:斜台の硬膜と外転神経へ)、tentorial artery(テント動脈:小脳テントへ。発見者の名前から Bernasconi-Cassinari 動脈ともいう)。
+- inferolateral trunk(下外側動脈幹):海綿静脈洞の中を通る脳神経(III・IV・VI)と三叉神経節を養う。
 
 ## 内頸動脈が硬膜の中で出す枝
 内頸動脈が硬膜を貫いて脳の周りの空間に出てから、次の順に枝を出す。試験ではこの順番がよく聞かれる。
@@ -107,7 +110,7 @@ circle of Willis | Willis 動脈輪
 ACoA | 前交通動脈。左右の ACA をつなぐ
 PCoA | 後交通動脈。ICA と PCA をつなぐ
 basilar artery | 脳底動脈。左右の椎骨動脈が合流
-carotid sinus | 頸動脈洞。ICA 起始部の圧受容器
+carotid sinus | 頸動脈洞。ICA 起始部にある血圧のセンサー(圧受容器)
 carotid canal | 頸動脈管。側頭骨錐体の中
 petrous segment | 錐体部(C2)
 cavernous segment | 海綿静脈洞部(C4)
@@ -120,7 +123,7 @@ choroidal fissure | 脈絡裂。脈絡叢が側脳室に入るすき間
 cisternal / plexal segment | 脳槽部 / 脈絡叢部(AChA の2区分)
 ACA | 前大脳動脈
 A1–A5 | ACA の区分
-recurrent artery of Heubner | Heubner 反回動脈
+recurrent artery of Heubner | Heubner 反回動脈。ACA の枝
 pericallosal artery | 脳梁周囲動脈
 callosomarginal artery | 脳梁縁動脈。帯状溝を走る
 hypoplasia | 低形成。血管が細い

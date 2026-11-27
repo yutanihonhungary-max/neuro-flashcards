@@ -201,7 +201,7 @@ Day 1 の原則どおり、正中寄りに運動の核(外転・舌下・迷走�
 trapezoid body | 台形体。橋の下部で、聴覚の線維が反対側へ渡る束
 auditory radiation | 聴放線。内側膝状体から聴覚野への線維
 vestibulo-ocular reflex | 前庭眼反射。頭の動きと反対へ目を動かし視線を保つ
-olfactory trigone | 嗅三角。嗅索が内側・外側嗅条に分かれる手前
+olfactory trigone | 嗅三角。嗅索が内側・外側嗅条に分かれる手前の所
 glossopharyngeal nerve | CN IX、舌咽神経
 vagus nerve | CN X、迷走神経
 accessory nerve | CN XI、副神経
@@ -213,7 +213,7 @@ inferior salivatory nucleus | 下唾液核。IX の副交感、耳下腺
 lesser petrosal nerve | 小錐体神経。IX の副交感を耳神経節へ
 otic ganglion | 耳神経節。耳下腺へ
 dorsal motor nucleus of vagus | 迷走神経背側核。X の副交感
-carotid sinus | 頸動脈洞。血圧のセンサー(圧受容器)
+carotid sinus | 頸動脈洞。ICA 起始部にある血圧のセンサー(圧受容器)
 carotid body | 頸動脈小体。血液ガスのセンサー(化学受容器)
 genioglossus | オトガイ舌筋。舌を前に突き出す
 sternocleidomastoid | 胸鎖乳突筋。頭を反対側へ回す
@@ -241,7 +241,7 @@ striae medullares | 髄条。第四脳室床で橋と延髄の境
 味覚の1次ニューロンの細胞体 | 膝神経節(VII)、舌咽神経と迷走神経の下神経節(IX・X)
 味覚野の Brodmann 番号 | 43野
 外側嗅条が届く場所 | 梨状皮質と扁桃体(さらに嗅内野・眼窩前頭皮質へ)
-CN XII が出る溝 | 錐体とオリーブの間
+CN XII が出る溝 | 錐体とオリーブの間(preolivary sulcus)
 CN IX・X・XI が出る場所 | オリーブの後ろ(retro-olivary sulcus)
 頸静脈孔を通る神経 | IX・X・XI
 CN XII が通る孔 | 舌下神経管
@@ -265,7 +265,7 @@ XI が支配する2筋 | 胸鎖乳突筋と僧帽筋
 舌下神経核の場所 | 第四脳室床の hypoglossal trigone
 舌を突き出す筋 | Genioglossus
 片側 XII 麻痺で舌が向く方向 | 麻痺した側
-EW核の線維が乗り換える神経節 | 毛様体神経節(→ 瞳孔括約筋)
+EW核の線維が乗り換える神経節 | 毛様体神経節(ciliary ganglion)→ 瞳孔括約筋
 涙腺への副交感の乗り換え駅 | 翼口蓋神経節(VII)
 顎下腺・舌下腺への乗り換え駅 | 顎下神経節(VII)
 耳下腺への乗り換え駅 | 耳神経節(IX)

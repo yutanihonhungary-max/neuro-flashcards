@@ -107,7 +107,7 @@ MCA | 中大脳動脈。ICA の最大の枝
 M1–M4 | MCA の区分(水平部・島部・弁蓋部・皮質部)
 lateral lenticulostriate arteries | 外側レンズ核線条体動脈。M1 の穿通枝
 anterior perforated substance | 前有孔質。穿通枝が入る脳底の場所
-olfactory trigone | 嗅三角。嗅索が内側・外側嗅条に分かれる所
+olfactory trigone | 嗅三角。嗅索が内側・外側嗅条に分かれる手前の所
 perforating arteries | 穿通枝。脳の深部へ入る細い動脈
 vertebral artery | 椎骨動脈
 V1–V4 | 椎骨動脈の区分
@@ -135,7 +135,7 @@ M1 の範囲 | ICA の分岐から島限まで
 MCA が上下の幹に分かれる場所 | 島限
 MCA が養う皮質 | 半球の外側面の大部分と島
 MCA が養う運動野の部分 | 顔と手(上肢)
-外側レンズ核線条体動脈の起始 | M1
+外側レンズ核線条体動脈の起始 | MCA(M1)
 外側レンズ核線条体動脈が養うもの | 被殻・淡蒼球外側・尾状核・内包
 高血圧性脳出血が多い血管 | 外側レンズ核線条体動脈
 MCA 梗塞の主な症状 | 反対側の顔と腕の麻痺、優位側なら失語

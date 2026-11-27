@@ -219,7 +219,7 @@ posterior horn | 後角。感覚の入口
 lateral horn | 側角。T1–L2、交感の節前ニューロン
 central canal | 中心管。脳室の続き
 Rexed laminae | 灰白質を後ろから前へ I〜X に分けた層
-substantia gelatinosa | 膠様質(lamina II)。痛みの調節
+substantia gelatinosa | 膠様質(lamina II)。後角の先端にあり、痛みの調節
 Clarke's nucleus | 背核(lamina VII、C8–L2)。後脊髄小脳路の起始
 intermediolateral nucleus | 中間外側核(側角)。自律神経の節前
 Onuf's nucleus | オヌフ核(S2)。陰部神経、外括約筋

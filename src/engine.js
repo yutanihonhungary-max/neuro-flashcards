@@ -9,10 +9,13 @@ function stepCards(ci,kind){const d=DECKS[ci];
   if(kind==='fact') return (d.facts||[]).map(c=>({q:c.q,a:c.a,s:0,sec:'③ 部品',ci,pg:c.pg,k:'f'}));
   return own(ci,null);}
 function revCards(r){return stepCards(r,'term').concat(stepCards(r,'fact'),own(r,null));}
+// 新しいカードを出さないデッキ:各Dayの「復習」(前の全Day)と、ホームの「今日の復習」(全Day)
+function noNewSi(si){return si==='rev'||si==='due';}
 function cardsOf(ci,si){
   const d=DECKS[ci]; let out=[];
   if(si==='term'||si==='fact') return stepCards(ci,si);
   if(si==='sum') out=stepCards(ci,'sum');
+  else if(si==='due') DECKS.forEach((x,r)=>{out=out.concat(revCards(r).map(c=>({...c,sec:'Day '+(r+1)+' ・ '+c.sec})));});
   else if(si==='rev') d.rev.forEach(r=>{out=out.concat(revCards(r).map(c=>({...c,sec:'Day '+(r+1)+' ・ '+c.sec})));});
   else{
     if(d.from&&si==null){ d.from.forEach(r=>{out=out.concat(own(r,null).map(c=>({...c,sec:'Day '+(r+1)+' ・ '+c.sec})));}); if(d.star) out=out.filter(c=>c.s>0); }
@@ -22,7 +25,7 @@ function cardsOf(ci,si){
 }
 function isCram(ci,si){return !!DECKS[ci].from&&si==null;}
 function revLabel(d){const n=d.rev.length;return n===1?'Day 1':n===2?'Day 1・2':'Day 1〜'+n;}
-function subName(ci,si){return {term:'② 用語',fact:'③ 部品',sum:'④ まとめ',rev:'復習'}[si]||(si==null?(DECKS[ci].from?'通し':'まとめ'):DECKS[ci].secs[si].title);}
+function subName(ci,si){return {term:'② 用語',fact:'③ 部品',sum:'④ まとめ',rev:'復習',due:'全Dayから、今日が期限のカード'}[si]||(si==null?(DECKS[ci].from?'通し':'まとめ'):DECKS[ci].secs[si].title);}
 
 // ---------- Anki (SM-2) scheduler ----------
 // Same defaults as Anki: learning steps 1m 10m, graduating 1 day, easy 4 days, start ease 250%,
@@ -39,7 +42,7 @@ function fuzz(iv){if(iv<3)return iv;const f=iv<7?1:iv<20?Math.round(iv*.1):Math.
 // s.q: 0 new, 1 learning, 2 review, 3 relearning. s.d = due time (ms) while (re)learning, due day number in review.
 function sched(s0,b,fz){const now=Date.now(),T=today(now);
   const s=s0?{...s0}:{q:0,s:0,i:0,e:CFG.ease0,r:0,l:0};s.r=(s.r||0)+1;
-  const toReview=iv=>{if(fz)iv=fuzz(iv);s.q=2;s.s=0;s.i=Math.min(CFG.maxIv,Math.max(1,iv));s.d=T+s.i;return s;};
+  const toReview=iv=>{if(fz)iv=fuzz(iv);s.q=2;s.s=0;s.i=Math.min(CFG.maxIv,Math.max(1,iv));s.d=capDue(T,s.i,fz?null:'');return s;};
   if(s.q===0){s.q=1;s.s=0;}
   if(s.q===1||s.q===3){const re=s.q===3,st=re?CFG.relearn:CFG.steps;
     if(b===1){s.s=0;s.d=now+st[0]*6e4;return s;}
@@ -54,9 +57,16 @@ function sched(s0,b,fz){const now=Date.now(),T=today(now);
   const easy=Math.max(good+1,Math.round((I+late)*s.e*CFG.easyBonus));
   if(b===2)s.e=Math.max(1.3,s.e-0.15); if(b===4)s.e+=0.15;
   return toReview(b===2?hard:b===3?good:easy);}
+// 試験日までに必ずもう一度出す(2026-11-27)。次の予定が試験の前日(12/10)を越えるときは、試験前の3日間(12/8〜12/10)のどれかに置く。
+// 間隔 s.i は Anki の計算のまま残す(試験のあとはふつうの間隔に戻る)。key があれば日はカードごとに決まり、どの端末でも同じになる。
+function hashN(t){let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return Math.abs(h);}
+function capDue(T,iv,key){const L=dnum(EXAM.d)-1;if(T>=L||T+iv<=L)return T+iv;const lo=Math.max(T+1,L-2),span=L-lo+1;
+  const k=key==null?Math.floor(Math.random()*span):key===''?span-1:hashN(key)%span;return lo+k;}
+function capAll(){const T=today(),L=dnum(EXAM.d)-1;if(T>=L)return;let n=0;
+  Object.keys(SRS).forEach(id=>{const s=SRS[id];if(s&&s.q===2&&s.d>L){s.d=capDue(T,s.d-T,id);n++;}});if(n)saveSrs();}
 function dur(min){if(min<1)return '1分未満';if(min<60)return Math.round(min)+'分';const h=min/60;if(h<24)return Math.round(h)+'時間';
   const d=h/24;if(d<30)return Math.round(d)+'日';if(d<365)return (Math.round(d/30*10)/10)+'か月';return (Math.round(d/365*10)/10)+'年';}
-function ivLabel(s0,b){const s=sched(s0,b,false);return s.q===2?dur(s.i*1440):dur((s.d-Date.now())/6e4);}
+function ivLabel(s0,b){const s=sched(s0,b,false);return s.q===2?dur((s.d-today())*1440):dur((s.d-Date.now())/6e4);}
 function counts(cards,noNew){const T=today();let n=0,l=0,r=0;const seen=new Set();
   cards.forEach(c=>{const id=cid(c);if(seen.has(id))return;seen.add(id);const s=SRS[id];
     if(!s||s.q===0){if(!noNew)n++;}else if(s.q===2){if(s.d<=T)r++;}else l++;});return {n,l,r};}
@@ -67,7 +77,7 @@ function fillCounts(el,k,noNew){el.textContent='';
 function countsText(k,noNew){if(!k.n&&!k.l&&!k.r)return noNew?'期限のカードなし':'今日の分は完了';
   return (noNew?[]:['新 '+k.n]).concat(['学習中 '+k.l,'復習 '+k.r]).join(' ・ ');}
 
-function pick(){const now=Date.now(),T=today(now),noNew=cur.si==='rev';const L=[],R=[],N=[],A=[];const seen=new Set();
+function pick(){const now=Date.now(),T=today(now),noNew=noNewSi(cur.si);const L=[],R=[],N=[],A=[];const seen=new Set();
   full.forEach(c=>{const id=cid(c);if(seen.has(id))return;seen.add(id);const s=SRS[id];
     if(!s||s.q===0){if(!noNew)N.push(c);}
     else if(s.q===2){if(s.d<=T)R.push(c);}
@@ -91,16 +101,16 @@ function restoreProg(){const S=loadProg()[cur.key];if(!S||S.n!==full.length||S.h
 function saveProg(){if(!cur||cur.mode!=='cram')return;const S=loadProg();S[cur.key]={n:full.length,h:hashFull(full),q:queue.map(c=>full.indexOf(c)),r:round,t:Date.now()};saveAll(S);
   if(isCram(cur.ci,cur.si))saveLast({type:'deck',mode:'cram',ci:cur.ci,si:cur.si,star:starOnly,label:$('uTitle').textContent+' ・ '+$('uSub').textContent,left:queue.length,n:full.length,r:round,t:Date.now()});}
 function addProg(){
-  document.querySelectorAll('#chapters .unit[data-deck]').forEach(b=>{const [ci0,si0]=b.dataset.deck.split('|');const ci=+ci0,si=si0==='null'?null:(isNaN(+si0)?si0:+si0);
+  document.querySelectorAll('#home .unit[data-deck]').forEach(b=>{const [ci0,si0]=b.dataset.deck.split('|');const ci=+ci0,si=si0==='null'?null:(isNaN(+si0)?si0:+si0);
     const c=b.querySelector('.count');
     if(isCram(ci,si)){const S=loadProg()[progKey(ci,si)];if(S&&(S.q.length<S.n||S.r>1)){c.textContent='残り '+S.q.length+'/'+S.n+(S.r>1?' ・'+S.r+'周目':'');b.classList.add('inprog');}return;}
-    const all=cardsOf(ci,si);if(!all.length)return;const k=counts(all,si==='rev');fillCounts(c,k,si==='rev');b.classList.toggle('inprog',k.l+k.r>0);});
+    const all=cardsOf(ci,si);if(!all.length)return;const k=counts(all,noNewSi(si));fillCounts(c,k,noNewSi(si));b.classList.toggle('inprog',k.l+k.r>0);});
   renderResume();
 }
 function renderResume(){const box=$('resume');const L=loadLast();if(!L||!DECKS[L.ci]){box.hidden=true;return;}
   let sub='';
   if(L.type==='deck'&&L.mode==='cram'){sub='残り '+L.left+' / '+L.n+' 枚'+(L.r>1?' ・ '+L.r+' 周目':'')+(L.star?' ・★のみ':'');}
-  else if(L.type==='deck'){const tmp=starOnly;starOnly=!!L.star;const k=counts(cardsOf(L.ci,L.si),L.si==='rev');starOnly=tmp;sub=countsText(k,L.si==='rev')+(L.star?' ・★のみ':'');}
+  else if(L.type==='deck'){const tmp=starOnly;starOnly=!!L.star;const k=counts(cardsOf(L.ci,L.si),noNewSi(L.si));starOnly=tmp;sub=countsText(k,noNewSi(L.si))+(L.star?' ・★のみ':'');}
   else if(L.type==='read'){sub=(L.p+1)+' / '+L.total+' ページ';}
   box.querySelector('span').textContent=L.label;box.querySelector('small').textContent=sub;box.hidden=false;}
 function resumeLast(){const L=loadLast();if(!L)return;
@@ -115,15 +125,71 @@ const PLAN=[
  {d:'2026-12-04',w:'金',c:[11,12]},{d:'2026-12-05',w:'土',c:[13,14]},{d:'2026-12-06',w:'日',c:[15,16]},{d:'2026-12-07',w:'月',c:[17,18]},
  {d:'2026-12-08',w:'火',c:[],note:'予備日:遅れたDayの取り戻しと、各Dayの「復習」'},
  {d:'2026-12-09',w:'水',c:[19]},{d:'2026-12-10',w:'木',c:[20]}];
+capAll();
 function dnum(iso){const [y,m,d]=iso.split('-').map(Number);return Math.floor(Date.UTC(y,m-1,d)/864e5);}
 function mdw(e){const [,m,d]=e.d.split('-').map(Number);return m+'/'+d+'('+e.w+')';}
-function renderHome(){
-  const box=$('chapters'); const open=[...box.querySelectorAll('details')].map(d=>d.open); box.innerHTML='';
-  let total=0;
+// 1つの Day のボタン(読む・用語・部品・まとめ・復習・通し)。ホームの一覧と「今日やること」の両方で使う。compact = 単元ごとのまとめは出さない
+function buildUnits(ci,compact){const d=DECKS[ci];
+  const units=document.createElement('div'); units.className='units';
+  const mk=(label,cnt,si,cls,sub)=>{const b=document.createElement('button');b.className='unit'+(cls?' '+cls:'');
+    const l=document.createElement('span');l.textContent=label;if(sub){const s=document.createElement('span');s.className='sub';s.textContent=sub;l.append(s);}
+    const c=document.createElement('span');c.className='count';c.textContent=cnt+' 枚';
+    b.append(l,c);b.dataset.deck=ci+'|'+si;b.disabled=cnt===0;b.addEventListener('click',()=>start(ci,si));units.appendChild(b);};
+  const mkStep=(num,label,sub,cnt,fn,cls,key)=>{const b=document.createElement('button');b.className='unit'+(cls?' '+cls:'');if(key)b.dataset.deck=key;
+    const l=document.createElement('span');l.className='step';const sn=document.createElement('span');sn.className='sn';sn.textContent=num;
+    const tx=document.createElement('span');tx.textContent=label;if(sub){const s=document.createElement('span');s.className='sub';s.textContent=sub;tx.append(s);}
+    l.append(sn,tx);const c=document.createElement('span');c.className='count';c.textContent=cnt;b.append(l,c);b.disabled=!cnt||cnt==='0 枚';b.addEventListener('click',fn);units.appendChild(b);};
+  if(d.lesson&&d.lesson.length){
+    mkStep('1','読む','この日の内容を基礎から',pagesLabel(ci),()=>openReader(ci));
+    mkStep('2','用語','言葉の意味を先に覚える',(d.terms||[]).length+' 枚',()=>start(ci,'term'),null,ci+'|term');
+    mkStep('3','部品','1枚1つの事実で積み上げる',(d.facts||[]).length+' 枚',()=>start(ci,'fact'),null,ci+'|fact');
+    mkStep('4','まとめ','試験形式の一問一答',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'),null,ci+'|sum');
+  } else if(own(ci,null).length){
+    mkStep('4','まとめ',d.from?'この日の新しいカード':'試験形式の一問一答(読む・用語・部品は準備中)',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'),null,ci+'|sum');
+  }
+  if(d.rev.length) mk('復習:'+revLabel(d),cardsOf(ci,'rev').length,'rev',null,'前の全Dayから、今日が期限のカード');
+  if(d.from) mk('通しで始める',cardsOf(ci,null).length,null,'all','模擬(予定は変えない)');
+  else if(d.secs.length>1&&!compact){const m=document.createElement('div');m.className='minor';m.textContent='まとめを単元ごとに';units.appendChild(m);
+    d.secs.forEach((s,si)=>{mk(s.title,cardsOf(ci,si).length,si);units.lastChild.classList.add('small');});}
+  if(d.from&&ci>=19&&typeof openOral==='function'){const b=document.createElement('button');b.type='button';b.className='unit oralbtn';
+    b.innerHTML='<span>🎤 口頭練習<span class="sub">過去問の質問に、声に出して答える</span></span><span class="count"></span>';
+    b.querySelector('.count').textContent=ORAL.length+' 問';b.addEventListener('click',()=>openOral());units.appendChild(b);}
+  return units;}
+// Day N のうち、まだ一度も答えていない新しいカードの数(用語・部品・まとめ)
+function newLeft(ci){const d=DECKS[ci];if(d.from)return 0;return counts(stepCards(ci,'term').concat(stepCards(ci,'fact'),own(ci,null)),false).n;}
+function openDayInList(ci){const det=document.querySelector('#chapters details[data-ci="'+ci+'"]');if(!det)return;det.open=true;det.scrollIntoView({behavior:'smooth',block:'start'});}
+// ホームの一番上:試験までの日数、今日の日付のDay、全Dayの復習、遅れているDay、口頭練習
+function renderToday(){const box=$('today');if(!box)return;box.textContent='';
   const td=today(), left=dnum(EXAM.d)-td;
   const ex=document.createElement('div');ex.className='examline';
   ex.textContent=left>0?'試験 '+mdw(EXAM)+' まで あと '+left+' 日':left===0?'今日は試験の日 '+mdw(EXAM):'試験 '+mdw(EXAM)+' は終わりました';
   box.appendChild(ex);
+  const pi=PLAN.findIndex(e=>dnum(e.d)===td);
+  const hd=document.createElement('div');hd.className='tdhd';const hb=document.createElement('b');hb.textContent='今日やること';hd.append(hb);
+  if(pi>=0){const sp=document.createElement('span');sp.textContent=mdw(PLAN[pi])+' ・ '+(pi+1)+'日目 / '+PLAN.length;hd.append(sp);}
+  box.appendChild(hd);
+  if(pi>=0){const e=PLAN[pi];
+    if(e.note){const nt=document.createElement('p');nt.className='tdnote';nt.textContent=e.note;box.appendChild(nt);}
+    e.c.forEach(ci=>{const d=DECKS[ci],t=split(d.title);const card=document.createElement('div');card.className='tdday';
+      const h=document.createElement('div');h.className='tdtitle';const n=document.createElement('span');n.className='tnum';n.textContent='Day '+t.n;
+      const tt=document.createElement('b');tt.textContent=t.en;h.append(n,tt);card.append(h,buildUnits(ci,true));box.appendChild(card);});}
+  const last=DECKS.length-1,all=cardsOf(last,'due');
+  const rb=document.createElement('button');rb.type='button';rb.className='unit due';rb.dataset.deck=last+'|due';
+  rb.innerHTML='<span>🔁 今日の復習(全Day)<span class="sub">これまでに答えたカードのうち、今日が期限のもの。新しいカードは出ません</span></span><span class="count"></span>';
+  rb.disabled=!all.length;rb.addEventListener('click',()=>start(last,'due'));box.appendChild(rb);
+  const late=[];PLAN.forEach(e=>{if(dnum(e.d)<td)e.c.forEach(ci=>{const n=newLeft(ci);if(n)late.push([ci,n]);});});
+  if(late.length){const lw=document.createElement('div');lw.className='late';const lt=document.createElement('span');lt.textContent='新しいカードが残っている前のDay:';lw.append(lt);
+    late.forEach(([ci,n])=>{const c=document.createElement('button');c.type='button';c.className='chip';c.textContent='Day '+(ci+1)+' 新 '+n;c.addEventListener('click',()=>openDayInList(ci));lw.append(c);});
+    box.appendChild(lw);}
+  if(typeof openOral==='function'){const ob=document.createElement('button');ob.type='button';ob.className='unit oralbtn';
+    ob.innerHTML='<span>🎤 口頭練習(過去問)<span class="sub">Signorelli 教授の過去問。習ったDayの問いから出します</span></span><span class="count"></span>';
+    ob.querySelector('.count').textContent=oralSummary();ob.addEventListener('click',()=>openOral());box.appendChild(ob);}
+}
+function renderHome(){
+  const box=$('chapters'); const open=[...box.querySelectorAll('details')].map(d=>d.open); box.innerHTML='';
+  let total=0;
+  const td=today();
+  renderToday();
   const placed=new Set(PLAN.flatMap(e=>e.c));
   const order=[];PLAN.forEach((e,pi)=>{order.push({hdr:e,pi});e.c.forEach(ci=>order.push({ci}));});
   DECKS.forEach((d,ci)=>{if(!placed.has(ci))order.push({ci});});
@@ -136,35 +202,14 @@ function renderHome(){
       box.appendChild(hd);return;}
     const ci=o.ci,d=DECKS[ci];
     const t=split(d.title), n=d.from?cardsOf(ci,null).length:(d.terms||[]).length+(d.facts||[]).length+own(ci,null).length; total+=d.from?own(ci,null).length:n;
-    const det=document.createElement('details'); det.open=!!open[ci];
+    const det=document.createElement('details'); det.open=!!open[ci]; det.dataset.ci=ci;
     const sum=document.createElement('summary');
     sum.innerHTML='<span class="num"></span><span class="ctitle"></span><span class="count"></span>';
     sum.children[0].textContent=t.n; if(d.sub) t.ja=d.sub;
     sum.children[1].textContent=t.en; if(t.ja){const sm=document.createElement('small');sm.textContent=t.ja;sum.children[1].appendChild(sm);}
     sum.children[2].textContent=n+' 枚';
     det.appendChild(sum);
-    const units=document.createElement('div'); units.className='units';
-    const mk=(label,cnt,si,cls,sub)=>{const b=document.createElement('button');b.className='unit'+(cls?' '+cls:'');
-      const l=document.createElement('span');l.textContent=label;if(sub){const s=document.createElement('span');s.className='sub';s.textContent=sub;l.append(s);}
-      const c=document.createElement('span');c.className='count';c.textContent=cnt+' 枚';
-      b.append(l,c);b.dataset.deck=ci+'|'+si;b.disabled=cnt===0;b.addEventListener('click',()=>start(ci,si));units.appendChild(b);};
-    const mkStep=(num,label,sub,cnt,fn,cls,key)=>{const b=document.createElement('button');b.className='unit'+(cls?' '+cls:'');if(key)b.dataset.deck=key;
-      const l=document.createElement('span');l.className='step';const sn=document.createElement('span');sn.className='sn';sn.textContent=num;
-      const tx=document.createElement('span');tx.textContent=label;if(sub){const s=document.createElement('span');s.className='sub';s.textContent=sub;tx.append(s);}
-      l.append(sn,tx);const c=document.createElement('span');c.className='count';c.textContent=cnt;b.append(l,c);b.disabled=!cnt||cnt==='0 枚';b.addEventListener('click',fn);units.appendChild(b);};
-    if(d.lesson&&d.lesson.length){
-      mkStep('1','読む','この日の内容を基礎から',pagesLabel(ci),()=>openReader(ci));
-      mkStep('2','用語','言葉の意味を先に覚える',(d.terms||[]).length+' 枚',()=>start(ci,'term'),null,ci+'|term');
-      mkStep('3','部品','1枚1つの事実で積み上げる',(d.facts||[]).length+' 枚',()=>start(ci,'fact'),null,ci+'|fact');
-      mkStep('4','まとめ','試験形式の一問一答',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'),null,ci+'|sum');
-    } else if(own(ci,null).length){
-      mkStep('4','まとめ',d.from?'この日の新しいカード':'試験形式の一問一答(読む・用語・部品は準備中)',cardsOf(ci,'sum').length+' 枚',()=>start(ci,'sum'),null,ci+'|sum');
-    }
-    if(d.rev.length) mk('復習:'+revLabel(d),cardsOf(ci,'rev').length,'rev',null,'前の全Dayから、今日が期限のカード');
-    if(d.from) mk('通しで始める',cardsOf(ci,null).length,null,'all','模擬(予定は変えない)');
-    else if(d.secs.length>1){const m=document.createElement('div');m.className='minor';m.textContent='まとめを単元ごとに';units.appendChild(m);
-      d.secs.forEach((s,si)=>{mk(s.title,cardsOf(ci,si).length,si);units.lastChild.classList.add('small');});}
-    det.appendChild(units); box.appendChild(det);
+    det.appendChild(buildUnits(ci,false)); box.appendChild(det);
   });
   $('total').textContent=total;
   addProg();
@@ -175,13 +220,13 @@ function start(ci,si,cram){
   const t=split(DECKS[ci].title);
   const mode=(cram||isCram(ci,si))?'cram':'srs';
   cur={ci,si,mode,key:progKey(ci,si)+(cram?'|c':'')};
-  $('uTitle').textContent='Day '+t.n+' '+t.en;
+  $('uTitle').textContent=si==='due'?'🔁 今日の復習':'Day '+t.n+' '+t.en;
   $('uSub').textContent=subName(ci,si)+(starOnly?' ・★のみ':'')+(cram?' ・ 練習(予定は変えない)':'');
   $('toast').hidden=true; $('doneBox').hidden=true; $('acts').classList.toggle('srs',mode==='srs');
   $('home').hidden=true; $('study').hidden=false; window.scrollTo(0,0);
   if(mode==='cram'){round=1; if(!restoreProg()) refill(); saveProg(); cc=queue[0]; show(); return;}
   const rank=new Map();(shuffle?mix(full.slice()):full).forEach((c,i)=>{const id=cid(c);if(!rank.has(id))rank.set(id,i);});
-  const k=counts(full,si==='rev');sess={rank,rnd:new Map(),last:null,undo:[],init:k.n+k.l+k.r};
+  const k=counts(full,noNewSi(si));sess={rank,rnd:new Map(),last:null,undo:[],init:k.n+k.l+k.r};
   saveLast({type:'deck',mode:'srs',ci,si,star:starOnly,label:$('uTitle').textContent+' ・ '+$('uSub').textContent,t:Date.now()});
   next();
 }
@@ -189,7 +234,7 @@ function refill(){queue=full.slice(); if(shuffle) mix(queue);}
 function next(){cc=pick(); if(cc){$('doneBox').hidden=true; show();} else showDone();}
 function showDone(){
   $('card').hidden=true; $('acts').hidden=true; $('doneBox').hidden=false;
-  const T=today(),noNew=cur.si==='rev';let tm=0,later=null;const seen=new Set();
+  const T=today(),noNew=noNewSi(cur.si);let tm=0,later=null;const seen=new Set();
   full.forEach(c=>{const id=cid(c);if(seen.has(id))return;seen.add(id);const s=SRS[id];if(!s)return;
     if(s.q===2&&s.d===T+1)tm++; if((s.q===1||s.q===3)&&(later==null||s.d<later))later=s.d;});
   $('doneTitle').textContent=noNew?'今日が期限の復習は全部終わりました':'このデッキの今日の分は終わりました';
@@ -199,7 +244,7 @@ function showDone(){
 function statsLine(){
   if(cur.mode==='cram'){$('left').textContent='残り '+queue.length+' / '+full.length+' 枚';$('round').textContent=round+' 周目';
     $('fill').style.width=((full.length-queue.length)/full.length*100)+'%';return;}
-  const k=counts(full,cur.si==='rev');fillCounts($('left'),k,cur.si==='rev');
+  const k=counts(full,noNewSi(cur.si));fillCounts($('left'),k,noNewSi(cur.si));
   const rem=k.n+k.l+k.r,base=Math.max(sess.init,rem,1);$('fill').style.width=((base-rem)/base*100)+'%';
 }
 function show(){

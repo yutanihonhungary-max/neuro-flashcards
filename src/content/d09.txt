@@ -107,10 +107,10 @@ reticular nucleus(視床の) | 視床網様核。皮質に投射しない唯一�
 anterior nucleus | 視床前核。乳頭体から帯状回へ
 dorsomedial nucleus | 背内側核。前頭前野への連合核
 VA / VL | 前腹側核 / 外側腹側核。基底核・小脳から運動野へ
-VPL | 後外側腹側核。体の感覚
-VPM | 後内側腹側核。顔の感覚と味覚
+VPL | 視床後外側腹側核。体の感覚の中継
+VPM | 視床後内側腹側核。顔の感覚と味覚の中継
 lateral geniculate body | 外側膝状体。視覚の中継
-medial geniculate body | 内側膝状体。聴覚の中継
+medial geniculate body | 内側膝状体。聴覚の視床中継
 intralaminar nuclei | 髄板内核。非特殊核
 specific relay nuclei | 特殊中継核
 association nuclei | 連合核

@@ -156,7 +156,7 @@ telencephalon | 終脳。大脳半球になる
 metencephalon | 後脳。橋と小脳になる
 myelencephalon | 髄脳。延髄になる
 pyramidal cell | 錐体細胞。皮質の主な出力細胞
-Betz cells | ベッツ細胞。第5層の巨大錐体細胞
+Betz cells | ベッツ細胞。一次運動野第5層の巨大錐体細胞
 stellate cell | 星状細胞(顆粒細胞)。第4層、興奮性
 fusiform cell | 紡錘細胞。第6層、抑制性
 horizontal cells of Cajal | カハール水平細胞。第1層

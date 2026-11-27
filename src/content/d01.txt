@@ -281,7 +281,7 @@ pyramid | 錐体。延髄前面の隆起、corticospinal tract が通る
 olive | オリーブ。延髄外側の隆起、下オリーブ核が入る
 cerebral aqueduct | 中脳水道(Sylvius 水道)。第三脳室と第四脳室をつなぐ
 periaqueductal gray | 中心灰白質。中脳水道を囲む灰白質
-red nucleus | 赤核。中脳被蓋の丸い核、運動の協調
+red nucleus | 赤核。中脳の被蓋の丸い核で、運動の協調に関わる。動眼神経の線維が通り抜ける
 substantia nigra | 黒質。大脳脚の背側、メラニンで黒い
 sulcus limitans | 境界溝。脳幹で運動の柱と感覚の柱を分ける
 somatic motor | 体性運動。体節由来の骨格筋(眼筋・舌筋)へ
@@ -353,7 +353,7 @@ GVE(副交感)の核を4つ | Edinger-Westphal・上唾液核・下唾液核・�
 中脳水道を囲む灰白質 | Periaqueductal gray
 上丘レベルの中脳にある脳神経核 | Oculomotor nucleus(CN III)
 下丘レベルの中脳にある脳神経核 | Trochlear nucleus(CN IV)
-CN III が出る場所 | Interpeduncular fossa
+CN III が出る場所 | 脚間窩(interpeduncular fossa)
 延髄で錐体の外側にある隆起 | Olive
 CN XII が出る溝 | 錐体とオリーブの間(preolivary sulcus)
 CN IX・X・XI が出る溝 | オリーブの後ろ(retro-olivary sulcus)

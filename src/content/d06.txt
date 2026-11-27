@@ -123,7 +123,7 @@ receptor(受容器)は、体の中や表面にあって、圧力・熱・伸び�
 
 @term
 sensory decussation | 毛帯交叉(感覚交叉)。延髄で内弓状線維が交叉する所
-substantia gelatinosa | 膠様質(海綿質)。後角の先端、II 層
+substantia gelatinosa | 膠様質(lamina II)。後角の先端にあり、痛みの調節
 spinal lemniscus | 脊髄毛帯。脳幹での脊髄視床路の束
 crude touch | 粗大触圧覚。場所を細かく区別できない大まかな触覚
 long tracts | 長経路。脳と脊髄を結ぶ長い線維路

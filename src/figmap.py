@@ -1,6 +1,10 @@
 # 「読む」の図の再表示:src/figures.txt の用語(キー)が本文に出てくるページに、同じ図を自動で付ける。
 # build_day.py から呼ぶ。各ページに ax = [{f:ファイル, c:説明, k:見つけた用語, at:段落番号, o:元のページ}] を足す。
 # 本文(b)は変えない(蛍光ペンが段落番号で保存しているため)。
+# 2026-11-27:
+#  - 借りる図は、同じ Day か前の Day のものだけ(まだ習っていない Day の図は出さない)。
+#  - そのページに元から図があるときは、借りた図がその図より前に来るなら、ページの本文の最後(確認問題の手前)に回す
+#    (上の枠に最初に出るのは、そのページの図。元の図の説明の途中で枠が切り替わらないように)。
 import re, pathlib, collections
 
 MAX_PER_PAGE = 3
@@ -48,6 +52,7 @@ def assign(D, path):
     figs = load(path)
     byfile = {x['f']: x for x in figs}
     home = {}  # 図 → 最初に出てくるページ
+    dayno = {id(d): i for i, d in enumerate(D)}
     for d in D:
         for pg in d.get('lesson', []):
             for l in pg['b']:
@@ -58,10 +63,13 @@ def assign(D, path):
     for d in D:
         for pg in d.get('lesson', []):
             own = {m.group(1) for m in (IMG.match(l) for l in pg['b']) if m}
+            own_first = next((i for i, l in enumerate(pg['b']) if IMG.match(l)), None)
             groups = {byfile[f]['g'] for f in own if f in byfile and byfile[f]['g']}
             cands = []
             for fi, fg in enumerate(figs):
                 if fg['f'] in own or not fg['keys'] or fg['f'] not in home:
+                    continue
+                if dayno[id(home[fg['f']][0])] > dayno[id(d)]:
                     continue
                 score, first, key = 0, None, None
                 for bi, l in enumerate(pg['b']):
@@ -89,6 +97,9 @@ def assign(D, path):
                     kind = pg['b'][at][0] == '-'
                     while at > 0 and LIST.match(pg['b'][at - 1]) and (pg['b'][at - 1][0] == '-') == kind:
                         at -= 1
+                if own_first is not None and at <= own_first:
+                    at = len(pg['b'])  # そのページの本文の最後(元の図とその説明を読み終えてから)
+                    stats['moved_to_end'] += 1
                 hd, hp = home[fg['f']]
                 n = re.match(r'\s*(\d+)', hd['title'])
                 origin = ('Day ' + n.group(1) if n else hd['title']) + '「' + hp['h'] + '」'

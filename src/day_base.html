@@ -44,7 +44,20 @@ button:focus-visible,summary:focus-visible,.card:focus-visible{outline:3px solid
 [hidden]{display:none!important}
 h1{font-family:var(--display);font-size:1.6rem;line-height:1.3;margin:0;text-wrap:balance}
 .lede{color:var(--muted);margin:0;font-size:.92rem}
-.examline{font-weight:700;color:var(--violet);padding:4px 2px 2px}
+.examline{font-weight:700;color:var(--violet);padding:0 2px}
+.today{display:flex;flex-direction:column;gap:8px;background:var(--surface);border:1px solid var(--violet);border-radius:14px;padding:12px}
+.tdhd{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:0 2px}.tdhd b{font-size:1.05rem}.tdhd span{font-size:.82rem;color:var(--muted)}
+.tdnote{margin:0;font-size:.86rem;padding:0 2px}
+.tdday{border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.tdtitle{display:flex;align-items:baseline;gap:8px;padding:10px 12px 8px}.tdtitle .tnum{font-size:.75rem;font-weight:700;color:var(--violet);white-space:nowrap}.tdtitle b{font-size:.95rem;line-height:1.4}
+.today>.unit{background:var(--violet-soft);border-color:var(--violet)}
+.late{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.82rem;color:var(--muted);padding:0 2px}
+.late .chip{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:3px 10px;font-size:.8rem;cursor:pointer}
+.imgsave{display:flex;align-items:center;gap:8px;width:100%;background:none;border:1px dashed var(--line);border-radius:10px;padding:8px 12px;color:var(--muted);font-size:.85rem;cursor:pointer;text-align:left}
+.imgsave b{color:var(--ink);font-weight:600}.imgsave small{margin-left:auto;font-size:.78rem}.imgsave:disabled{opacity:.7}
+.howto{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:8px 14px}
+.howto summary{cursor:pointer;font-size:.88rem;color:var(--muted);font-weight:600}
+.howto .lede{margin:8px 0 4px}
 .dayhdr{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:14px 2px 2px;padding-top:8px;border-top:1px solid var(--line)}
 .dayhdr b{font-size:1rem}
 .dayhdr span{font-size:.8rem;color:var(--muted)}
@@ -147,19 +160,74 @@ summary::-webkit-details-marker{display:none}
 .donebox .unit{flex-direction:column;align-items:flex-start;gap:2px}
 .donebox .unit .sub{display:block;font-size:.75rem;color:var(--muted);font-weight:400}
 .restart{background:none;border:none;color:var(--muted);font-size:.8rem;text-decoration:underline;cursor:pointer;padding:0}
+.ohead{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}.ohead #oSum{font-size:.8rem;color:var(--muted)}
+.ocard{display:flex;flex-direction:column;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.otag{font-size:.78rem;color:var(--violet);font-weight:700}
+.oq{margin:0;font-family:var(--display);font-size:1.3rem;line-height:1.45}
+.oja{margin:0;color:var(--muted);font-size:.9rem}
+.otimer{display:flex;align-items:center;gap:10px}.otimer #oTime{font-variant-numeric:tabular-nums;font-weight:700;min-width:3.2em}
+.otimer .track{flex:1}.otimer.over #oTime{color:#c0392b}.otimer.over .fill{background:#c0392b}
+.otimer button{border:1px solid var(--violet);background:var(--surface);color:var(--violet);border-radius:999px;padding:5px 14px;font-weight:700;cursor:pointer;white-space:nowrap}
+.ohint{margin:0;font-size:.8rem;color:var(--muted)}
+.olab{display:block;font-size:.85rem;margin:6px 0 4px}
+#oFu{margin:0 0 6px;padding-left:1.2em;font-size:.9rem;line-height:1.6}
+#oPts{display:flex;flex-direction:column;gap:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--paper);cursor:pointer}
+.opt.ok{border-color:var(--ok)}.opt input{width:20px;height:20px;margin:2px 0 0;flex:none;accent-color:var(--ok)}
+.opt>div{flex:1;min-width:0}.opt b{font-size:.9rem;line-height:1.5;display:block}.opt .od{font-size:.7rem;color:var(--muted);font-weight:400;margin-left:6px}
+.opt .oa{font-size:.88rem;line-height:1.6;margin-top:4px}
+.oacts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.oacts .show{grid-column:1/-1}.oacts .oskip{grid-column:1/-1;background:none;border:none;color:var(--muted);text-decoration:underline;font-size:.82rem;cursor:pointer}
+.oacts button{border-radius:12px;padding:12px 8px;font-weight:700;cursor:pointer;border:1.5px solid var(--line);background:var(--surface);color:var(--ink)}
+.oacts .show{background:var(--violet);border-color:var(--violet);color:var(--surface)}
+.oacts .g1{border-color:#b5651d;color:#b5651d}.oacts .g2{border-color:var(--ink)}.oacts .g3{border-color:var(--ok);color:var(--ok)}
+.oempty{color:var(--muted);font-size:.9rem}
+.unit.oralbtn{background:var(--surface)}
 </style>
 </head>
 <body>
 <main class="wrap" id="home">
   <nav class="switch" aria-label="版の切り替え"><a href="../">章別</a><a href="./" aria-current="page">Day別</a></nav>
   <h1>脳解剖学 単語帳 Day別</h1>
-  <p class="lede">Signorelli 口頭試験の一問一答 <span id="total"></span> 枚。12月11日の試験に合わせて、11/26 から15日間の日付ごとに並んでいます(1日に2つのDayを進める日があります)。その日の日付の下のDayを開いて始めてください。カードは Anki と同じ方式です。答えを見たら「もう一度・難しい・正解・簡単」で手応えを選ぶと、次に出す日が自動で決まります。各Dayの「復習」には、それより前の全Dayから今日が期限のカードが出ます。</p>
+  <section class="today" id="today" aria-label="今日やること"></section>
+
+  <button class="resume" id="resume" type="button" hidden><b>前回の続き</b><span></span><small></small></button>
   <div class="opts">
     <button class="toggle" id="optStar" aria-pressed="false"><span class="dot"></span>過去問に出た ★ だけ</button>
     <button class="toggle" id="optShuffle" aria-pressed="false"><span class="dot"></span>順番を混ぜる</button>
   </div>
-  <button class="resume" id="resume" type="button" hidden><b>前回の続き</b><span></span><small></small></button>
+  <button class="imgsave" id="imgSave" type="button"><span>📥</span><b>図をオフライン用に保存</b><small></small></button>
+  <details class="howto"><summary>使い方</summary>
+    <p class="lede">Signorelli 口頭試験の一問一答 <span id="total"></span> 枚。上の「今日やること」に、今日の日付の Day と、全Dayの復習が出ます。12月11日の試験に合わせて、11/26 から15日間の日付ごとに並んでいます(1日に2つのDayを進める日があります)。その日の日付の下のDayを開いて始めてください。カードは Anki と同じ方式です。答えを見たら「もう一度・難しい・正解・簡単」で手応えを選ぶと、次に出す日が自動で決まります。各Dayの「復習」には、それより前の全Dayから今日が期限のカードが出ます。</p>
+  </details>
   <div class="chapters" id="chapters"></div>
+</main>
+<main class="wrap" id="oral" hidden>
+  <div class="bar">
+    <button class="back" id="oBack">← 単元一覧</button>
+    <div class="where"><b>🎤 口頭練習</b><span id="oPos"></span></div>
+  </div>
+  <div class="ohead"><button class="toggle" id="oLearned" aria-pressed="true"><span class="dot"></span>習ったDayの問いだけ</button><span id="oSum"></span></div>
+  <div class="ocard" id="oCard">
+    <div class="otag" id="oTag"></div>
+    <p class="oq" id="oQ"></p>
+    <p class="oja" id="oJa"></p>
+    <div class="otimer" id="oTimerBox"><span id="oTime">0:00</span><div class="track"><div class="fill" id="oFill"></div></div><button type="button" id="oStart">▶ 話し始める</button></div>
+    <p class="ohint">声に出して、2分を目安に答えてみる。言い終わったら「要点を見る」。</p>
+    <div id="oAns" hidden>
+      <div id="oFuBox"><b class="olab">過去の試験で、続けて聞かれたこと</b><ul id="oFu"></ul></div>
+      <b class="olab">入れたい要点(言えたものにチェック)</b>
+      <div id="oPts"></div>
+    </div>
+  </div>
+  <div class="oempty" id="oEmpty" hidden>まだ習ったDayの問いがありません。上の「習ったDayの問いだけ」を外すと、全部の問いから出します。</div>
+  <div class="oacts" id="oActs">
+    <button class="show" id="oShow" type="button">要点を見る</button>
+    <button class="g1" data-r="0" type="button" hidden>言えなかった</button>
+    <button class="g2" data-r="1" type="button" hidden>一部言えた</button>
+    <button class="g3" data-r="2" type="button" hidden>言えた</button>
+    <button class="oskip" id="oSkip" type="button">次の問いへ(記録しない)</button>
+  </div>
 </main>
 <main class="wrap" id="study" hidden>
   <div class="bar">
@@ -201,8 +269,19 @@ const DECKS=[{"title":"1 脳幹の構成と3つの断面","secs":[{"title":"全�
 // 別の端末の記録が届いたら(sync.js):カードの予定を読み直し、ホームなら一覧を描き直す。
 // 単元は開いたときは全部閉じておき、描き直しても開け閉めはそのまま保つ。
 window.addEventListener('neuro-sync',e=>{const ks=(e.detail&&e.detail.keys)||[];
-  if(ks.indexOf(SRS_KEY)>=0){try{SRS=JSON.parse(localStorage.getItem(SRS_KEY)||'{}')||{};}catch(err){}}
+  if(ks.indexOf(SRS_KEY)>=0){try{SRS=JSON.parse(localStorage.getItem(SRS_KEY)||'{}')||{};}catch(err){}capAll();}
   if(!$('home').hidden)renderHome();});
+// 図をまとめてオフライン用に保存(2026-11-27)。ふだんは一度表示した図だけが残る。sw.js が、読み込んだ図をキャッシュに入れる。
+const IMGS=[...new Set(DECKS.flatMap(d=>(d.lesson||[]).flatMap(p=>p.b.map(l=>(l.match(/^!img\s+(\S+)/)||[])[1]).concat((p.ax||[]).map(a=>a.f)))).filter(Boolean))];
+function imgSaveLabel(t){$('imgSave').querySelector('small').textContent=t;}
+(()=>{let n=0;try{n=+localStorage.getItem('neuro-imgcache')||0;}catch(e){}imgSaveLabel(n>=IMGS.length?'保存済み('+n+'枚)':'全'+IMGS.length+'枚・約12MB');})();
+$('imgSave').addEventListener('click',async()=>{const b=$('imgSave');if(b.disabled)return;
+  if(!('serviceWorker' in navigator)||!navigator.serviceWorker.controller){imgSaveLabel('この画面を一度開き直してから押してください');return;}
+  b.disabled=true;let ok=0,ng=0;
+  for(let i=0;i<IMGS.length;i+=6){await Promise.all(IMGS.slice(i,i+6).map(f=>fetch('../img/'+f,{cache:'reload'}).then(r=>{if(r.ok)ok++;else ng++;}).catch(()=>{ng++;})));
+    imgSaveLabel('保存中 '+(ok+ng)+' / '+IMGS.length);}
+  try{localStorage.setItem('neuro-imgcache',String(ok));}catch(e){}
+  imgSaveLabel(ng?ok+'枚保存・'+ng+'枚失敗(ネットにつないでもう一度)':'保存済み('+ok+'枚)');b.disabled=false;});
 renderHome();
 </script>
 <script>if('serviceWorker' in navigator)navigator.serviceWorker.register('../sw.js',{scope:'../'}).catch(()=>{});</script>

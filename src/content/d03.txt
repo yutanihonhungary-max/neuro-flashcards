@@ -292,7 +292,7 @@ mesencephalic nucleus | 三叉神経中脳路核。固有感覚
 main sensory nucleus | 三叉神経主感覚核(橋)。触覚
 spinal trigeminal nucleus | 三叉神経脊髄路核。痛覚・温度覚
 trigeminal lemniscus | 三叉毛帯。主感覚核から VPM へ
-VPM | 視床後内側腹側核。顔の感覚と味覚
+VPM | 視床後内側腹側核。顔の感覚と味覚の中継
 corneal reflex | 角膜反射。求心 V1、遠心 VII
 jaw-jerk reflex | 下顎反射。求心も遠心も V3
 facial nerve | CN VII、顔面神経

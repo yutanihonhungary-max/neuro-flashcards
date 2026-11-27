@@ -130,12 +130,12 @@ dura mater | 硬膜
 arachnoid mater | くも膜
 pia mater | 軟膜
 epidural space | 硬膜外腔
-subarachnoid space | くも膜下腔。CSF と血管
+subarachnoid space | くも膜下腔。脳と脊髄の外側を CSF が流れ、血管が通る
 periosteal layer | 硬膜の骨膜層
 meningeal layer | 硬膜の髄膜層
 dural venous sinuses | 硬膜静脈洞。2層の硬膜の間
 falx cerebri | 大脳鎌
-tentorium cerebelli | 小脳テント
+tentorium cerebelli | 小脳テント。大脳と小脳を隔てる硬膜
 falx cerebelli | 小脳鎌
 diaphragma sellae | 鞍隔膜
 tentorial notch | テント切痕。中脳が通る

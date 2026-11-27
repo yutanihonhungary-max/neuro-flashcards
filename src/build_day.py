@@ -51,6 +51,11 @@ import figmap
 print('figs',dict(figmap.assign(D,SRC/'figures.txt')))
 data=json.dumps(D,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')
 h=h[:a]+data+h[b:]
+# ---- 口頭練習(問いは src/oral.txt、要点のカードは src/oralmap.py、画面は src/oral.js)
+import oralmap
+ORAL=oralmap.assign(D,SRC/'oral.txt')
+print('oral',len(ORAL),'questions,',sum(len(x['pts']) for x in ORAL),'points')
+h=h.replace(';\nconst $=',';\nconst ORAL='+json.dumps(ORAL,ensure_ascii=False,separators=(',',':')).replace('</','<\\/')+';\nconst $=',1)
 def rep(o,n,cnt=1):
     global h
     assert o in h,o[:60]; h=h.replace(o,n,cnt)
@@ -223,6 +228,8 @@ rep('</style>',""".reader p.figref.auto{border:1px dashed var(--line);background
 </style>""")
 # ---- 「読む」の各ページの最後の確認問題(チェックボックスだけ。暗記の予定は付けない。割り当ては src/quizmap.py)
 rep("  if(figs.length){const tb=$('dTabs')","  quizRender(tx);\n  if(figs.length){const tb=$('dTabs')")
+# 借りた図の位置がページの最後(at = 段落数)のときは、本文のあと・確認問題の手前に出す
+rep("  quizRender(tx);\n","  (pg.ax||[]).forEach(a=>{if(a.at>=pg.b.length){kind='';addAuto(a);}});\n  quizRender(tx);\n")
 rep("function renderPage(){",r"""const QZK='neuro-quiz-day';
 function qzLoad(){try{return JSON.parse(localStorage.getItem(QZK)||'{}')||{};}catch(e){return {};}}
 function quizRender(tx){const qz=DECKS[rd.ci].lesson[rd.p].qz;if(!qz||!qz.length)return;const ci=rd.ci,st=qzLoad();
@@ -259,6 +266,7 @@ rep('</style>',""".quiz{margin-top:18px;border:1px solid var(--line);border-radi
 .qa{font-size:.92rem;line-height:1.65;color:var(--ink,inherit);border-top:1px dashed var(--line);padding-top:6px;overflow-wrap:anywhere}
 .qznote{font-size:.75rem!important;color:var(--muted);margin:0!important;line-height:1.5!important}
 </style>""")
+rep("$('card').addEventListener('click',flip);",open(f'{APP}/oral.js',encoding='utf-8').read().rstrip('\n')+"\n$('card').addEventListener('click',flip);")
 open(ROOT/'day'/'index.html','w',encoding='utf-8').write(h)
 # chapter version typo fixes
 ci=open(ROOT/'index.html',encoding='utf-8').read()

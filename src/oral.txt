@@ -1,0 +1,170 @@
+# 口頭練習(Day 20・21、ホームの「🎤 口頭練習」)の問い(2026-11-27)
+# 出典:プロジェクトの過去問メモ(2020年6・7・9・10・11・12月、2021年1月、2023年2月)のうち、Signorelli 教授の質問だけ。
+# Caiati の質問は入れない(試験官ではないため)。似た質問はまとめて1問にした。
+#
+# 書き方:
+#   ## 英語の問い | 日本語 | Day番号(カンマ区切り) | キーワード(カンマ区切り) | ★(3回以上出たもの、省略可)
+#   - 実際の試験で、続けて聞かれた質問(英語。メモの言い方を短くしたもの)
+# キーワードは、そのDayの「部品」「まとめ」カードの問い・答えから「入れたい要点」を探すのに使う(build_day.py → oralmap)。
+
+## Describe the limbic system | 辺縁系の構成 | 12 | limbic, 辺縁, Papez, cingulate, 帯状回, hippocampus, 海馬, amygdala, 扁桃体, fornix, 脳弓, mammillary, 乳頭体 | ★
+- What is the circuit of Papez?
+- How is the limbic system organized?
+
+## Structure of the hippocampus | 海馬の構造 | 12,14 | hippocampus, 海馬, dentate, 歯状回, CA1, subiculum, 海馬台, stratum, alveus, fimbria, 海馬采 | ★
+- Where is the hippocampus? If we open the lateral ventricle, do we see it?
+- What is its relation to the amygdala?
+
+## Structure and organization of the hypothalamus | 視床下部の構造と区分 | 10 | hypothalamus, 視床下部, 核, nucleus, nuclei, zone, 野, infundibulum, 漏斗, mammillary, 乳頭体, supraoptic, paraventricular | ★
+- What is the infundibulum? Other parts of the hypothalamus
+- Connection between hypothalamus and hypophysis
+- Hormones of adeno- and neurohypophysis and their functions
+
+## Hypophysis: parts, connections and hormones | 下垂体:区分・視床下部とのつながり・ホルモン | 10 | hypophysis, 下垂体, pituitary, portal, 門脈, oxytocin, オキシトシン, vasopressin, ADH, anterior lobe, posterior lobe, 前葉, 後葉, Rathke
+- How are the hypothalamic hormones carried to the hypophysis?
+- What do the hormones do?
+
+## Structure of the brachial plexus (draw it) | 腕神経叢の構造(描けるように) | 18,19 | brachial, 腕神経叢, trunk, 幹, cord, 束, root, division, musculocutaneous, 筋皮, axillary, 腋窩, radial, 橈骨, ulnar, 尺骨, median, 正中 | ★
+- Radial nerve: course and innervation (motor and sensory)
+- Sensory part of the musculocutaneous nerve
+- Functions of the axillary and radial nerves
+- Difference between the sensory territory of the radial and ulnar nerves
+
+## Lumbosacral plexus and the thoracic outlet | 腰仙骨神経叢と胸郭出口(横隔神経) | 18,19 | lumbar, sacral, 腰, 仙骨, femoral, 大腿, obturator, 閉鎖, sciatic, 坐骨, phrenic, 横隔, thoracic outlet, 斜角筋
+- Phrenic nerve: origin and course
+
+## Parasympathetic ganglia of the head | 頭の副交感神経節 | 2,3,4 | ganglion, 神経節, ciliary, 毛様体, pterygopalatine, 翼口蓋, submandibular, 顎下, otic, 耳神経節, Edinger, EW, salivatory, 唾液核 | ★
+- Edinger-Westphal nucleus and the ciliary ganglion
+- Submandibular and pterygopalatine ganglia: where do their fibers come from?
+
+## Circuit of the cerebellar cortex | 小脳皮質の回路 | 7 | Purkinje, プルキンエ, mossy, 苔状, climbing, 登上, granule, 顆粒, layer, 層, deep nuclei, 小脳核, basket, stellate, Golgi | ★
+- Layers and cells of the cerebellar cortex
+- What do Purkinje cells do, and what is their action on the deep nuclei?
+- Do the deep nuclei receive afferent fibers?
+
+## Functional divisions of the cerebellum and its deep nuclei | 小脳の機能区分と小脳核 | 7 | archicerebellum, paleocerebellum, neocerebellum, 原小脳, 古小脳, 新小脳, vestibulocerebellum, spinocerebellum, pontocerebellum, cerebrocerebellum, dentate, 歯状核, fastigial, 室頂核, emboliform, globose | ★
+- Which is the efferent nucleus of the neocerebellum?
+- How is the cerebellum connected to the brainstem? (peduncles)
+- Anatomy: vermis, tonsils
+
+## Organization of the cranial nerve nuclei in the brainstem | 脳幹の脳神経核の配列 | 1,4 | nuclei, 核, column, 柱, GSE, GVE, SVE, GVA, SVA, GSA, sulcus limitans, 境界溝, motor, sensory | ★
+- Nuclei of the medulla oblongata
+- How do the motor nuclei of III, IV and VI communicate? (MLF)
+
+## Divisions of the brainstem and the structure of the pons | 脳幹の区分(base・tegmentum・roof)と橋の構造 | 1 | base, tegmentum, 被蓋, roof, tectum, 蓋, pons, 橋, basilar, 橋底部, pontine nuclei, 橋核
+- Can you divide the brainstem into anatomical parts?
+
+## Section of the midbrain from front to back, and the long pathways in it | 中脳の断面(前から後ろへ)と、通る長経路 | 1,6 | midbrain, 中脳, peduncle, 大脳脚, substantia nigra, 黒質, red nucleus, 赤核, colliculus, 丘, aqueduct, 中脳水道, lemniscus, 毛帯
+- What is the Sylvian aqueduct?
+- Functions of the red nucleus
+
+## Nerves that move the eyes: nuclei and course | 目を動かす神経:核と通り道 | 2 | oculomotor, 動眼, trochlear, 滑車, abducens, 外転, MLF, 内側縦束, Dorello, cavernous, 海綿静脈洞, superior orbital fissure, 上眼窩裂 | ★
+- Course of the sixth nerve: where does it exit, Dorello's canal
+- In which part of the cavernous sinus is CN VI?
+- What is the facial colliculus?
+
+## Light reflex and the Edinger-Westphal nucleus | 対光反射と動眼神経副核 | 2 | light reflex, 対光, pretectal, 視蓋前, Edinger, EW, ciliary, 毛様体, 瞳孔, pupil, accommodation, 調節
+- Where are the parasympathetic fibers in the oculomotor nerve, and why are they easily compressed? (PCoA aneurysm)
+
+## Trigeminal nerve: nuclei, divisions, course and sensory pathway | 三叉神経:核・3本の枝・走行・感覚の伝導路 | 3 | trigeminal, 三叉, V1, V2, V3, ophthalmic, maxillary, mandibular, Gasser, 三叉神経節, mesencephalic, 中脳路核, spinal nucleus, 脊髄路核, lemniscus, 毛帯 | ★
+- Reflexes associated with the trigeminal nerve
+- Somatotopy of the trigeminal sensory nuclei
+- Course of the three branches; trigeminal ganglion
+
+## Facial nerve: nuclei and pathway | 顔面神経:核と通り道 | 3 | facial, 顔面, geniculate, 膝神経節, chorda tympani, 鼓索, stylomastoid, 茎乳突孔, intermediate, 中間神経, internal acoustic, 内耳道, lacrimal, 涙腺, palsy, 麻痺 | ★
+- Before and after the internal acoustic meatus; the facial canal
+- Which branch carries taste? Visceral effect (lacrimal gland)
+- Cortical control of the facial motor nucleus: central vs peripheral palsy
+
+## Glossopharyngeal, vagus and hypoglossal nerves; swallowing | 舌咽・迷走・舌下神経と飲み込み | 4 | glossopharyngeal, 舌咽, vagus, 迷走, hypoglossal, 舌下, ambiguus, 疑核, solitary, 孤束, carotid sinus, 頸動脈洞, carotid body, 頸動脈小体, swallow, 嚥下
+- Which nerve for swallowing? Why is it called nucleus ambiguus?
+- Functions of the hypoglossal nerve
+
+## Taste pathway | 味覚の伝導路 | 3,4 | taste, 味覚, solitary, 孤束, chorda tympani, 鼓索, VPM, gustatory
+
+## Auditory and vestibular systems | 聴覚と平衡覚 | 4,14 | auditory, 聴覚, cochlear, 蝸牛, olive, オリーブ, lemniscus, 毛帯, inferior colliculus, 下丘, medial geniculate, 内側膝状体, Heschl, vestibular, 前庭
+- Part of the cortex that receives hearing; is it crossed or bilateral?
+- What about the vestibular system?
+
+## Fourth ventricle: walls, roof, floor and openings | 第四脳室:壁・天井・床・出口 | 1,4,8 | fourth ventricle, 第四脳室, floor, 床, roof, 天井, rhomboid, 菱形窩, Magendie, Luschka, median aperture, lateral aperture, facial colliculus, 顔面神経丘, velum, 髄帆 | ★
+- Nuclei on the floor of the fourth ventricle and their exact position
+- How are the cerebellum and brainstem organized around it?
+
+## Ventricular system | 脳室系 | 8 | ventricle, 脳室, lateral ventricle, 側脳室, third ventricle, 第三脳室, Monro, 室間孔, aqueduct, 中脳水道, horn, 角
+- Limits of the foramen of Monro
+
+## CSF: production, pathway and reabsorption | CSF:産生・流れ・吸収 | 8 | CSF, 脳脊髄液, choroid plexus, 脈絡叢, arachnoid granulation, くも膜顆粒, absorption, 吸収, production, 産生, blood-brain, 血液脳関門, hydrocephalus, 水頭症 | ★
+- How much CSF is produced? Composition
+- Mechanism of absorption
+- Characteristic structure of the blood-brain barrier
+
+## Spinal cord grey matter: columns, nuclei, laminae | 脊髄の灰白質:柱・核・層 | 5 | grey matter, gray matter, 灰白質, lamina, 層, Rexed, Onuf, Clarke, intermediolateral, 中間外側, horn, 角, nucleus, 核 | ★
+- Onuf's nucleus, Clarke's nucleus
+- Intermediolateral nucleus and the lateral horn (sympathetic / parasympathetic)
+- Section at the cervical enlargement: draw it
+
+## Spinal cord white matter: position of the tracts | 脊髄の白質:伝導路の位置 | 5,6 | funiculus, 索, tract, 路, dorsal column, 後索, spinothalamic, 脊髄視床, spinocerebellar, 脊髄小脳, corticospinal, 皮質脊髄, vestibulospinal, 前庭脊髄, reticulospinal | ★
+- Vestibulospinal tract: origin, function, course
+- First-order neuron of the sensory pathways (dorsal root ganglion)
+
+## Ascending pathways: conscious and unconscious proprioception | 上行路:意識にのぼる/のぼらない深部感覚 | 6 | proprioception, 深部感覚, dorsal column, 後索, medial lemniscus, 内側毛帯, spinothalamic, 脊髄視床, spinocerebellar, 脊髄小脳, receptor, 受容器 | ★
+- Whole pathway of conscious proprioception and exteroception
+- Function of the spinocerebellar tracts
+- Trigeminal lemniscus (proprioception of the head)
+
+## Pyramidal system | 錐体路 | 6,13 | pyramidal, 錐体路, corticospinal, 皮質脊髄, corticobulbar, 皮質核, Betz, layer, 層, homunculus, somatotopic, 体部位
+- From which cortical layer? Somatotopy in the cortex and in the anterior horn
+
+## Extrapyramidal system and the basal ganglia circuit | 錐体外路系と大脳基底核の回路 | 11 | basal ganglia, 基底核, striatum, 線条体, putamen, 被殻, caudate, 尾状核, globus pallidus, 淡蒼球, subthalamic, 視床下核, substantia nigra, 黒質, direct, indirect, 直接路, 間接路, dopamine, ドパミン, GABA, Parkinson | ★
+- Why is it called extrapyramidal?
+- Circuit involved in Parkinson's disease
+- Neurotransmitters in the pathways; link with the cerebellum
+
+## Organization of the internal capsule | 内包の構成 | 11 | internal capsule, 内包, anterior limb, 前脚, genu, 膝, posterior limb, 後脚, retrolenticular, sublenticular, lentiform, レンズ核
+- What is more lateral, the lentiform nucleus or the internal capsule?
+
+## Diencephalon and the nuclei of the thalamus | 間脳と視床の核 | 9 | diencephalon, 間脳, thalamus, 視床, VPL, VPM, VL, VA, pulvinar, 視床枕, geniculate, 膝状体, internal medullary lamina, 内髄板, epithalamus, subthalamus | ★
+- Parts of the diencephalon
+- Geniculate bodies and the pathways they belong to
+- Thalamus and its relation to the ventricles; fornix
+
+## Organization of the cerebral cortex: layers | 大脳皮質の層構造 | 13 | layer, 層, cortex, 皮質, pyramidal cell, 錐体細胞, granular, 顆粒, Brodmann, isocortex, 新皮質
+
+## Frontal lobe: borders and areas | 前頭葉:境界と領域 | 13 | frontal, 前頭, precentral, 中心前回, Broca, ブローカ, central sulcus, 中心溝, paracentral, 中心傍小葉, motor area, 運動野
+- Paracentral lobule: what does it do?
+
+## Parietal lobe: limits, sulci, gyri and areas | 頭頂葉:境界・溝・回・領域 | 13 | parietal, 頭頂, postcentral, 中心後回, somatosensory, 体性感覚野, supramarginal, 縁上回, angular, 角回, homunculus, ホムンクルス
+- Organization of the primary sensory cortex (homunculus)
+
+## Temporal lobe and the insula | 側頭葉と島 | 14 | temporal, 側頭, insula, 島, uncus, 鉤, Heschl, Wernicke, ウェルニッケ, circular sulcus, 輪状溝, lateral sulcus, 外側溝
+- Limits of the temporal lobe; gyri of the insula
+- Structures from the insula toward the midline
+
+## Visual pathway and lesions | 視覚路とその障害 | 14 | visual, 視覚, optic chiasm, 視交叉, optic tract, 視索, lateral geniculate, 外側膝状体, optic radiation, 視放線, calcarine, 鳥距, hemianopia, 半盲, Meyer | ★
+- Lesion of the left optic tract: what defect?
+- Arteries supplying the visual system; central retinal artery
+- Vascularization of the primary visual cortex
+
+## Internal carotid artery: course and branches | 内頸動脈:走行と枝 | 16 | ICA, internal carotid, 内頸動脈, petrous, 錐体部, cavernous, 海綿静脈洞部, siphon, ophthalmic, 眼動脈, segment, 区分
+- Course in the petrous part: the bends
+
+## Circle of Willis and the anterior choroidal artery | Willis 動脈輪と前脈絡叢動脈 | 16 | Willis, 動脈輪, AChA, anterior choroidal, 前脈絡叢, PCoA, 後交通, ACoA, 前交通, Heubner
+- Territory of the anterior choroidal artery; which part of the basal ganglia?
+- Other artery supplying the caudate (recurrent artery of Heubner)
+
+## Anterior cerebral artery | 前大脳動脈 | 16 | ACA, anterior cerebral, 前大脳動脈, A1, A2, pericallosal, 脳梁周囲, callosomarginal, Heubner
+- Segments and territory (paracentral lobule)
+
+## Middle cerebral artery and the anterior perforated substance | 中大脳動脈と前有孔質 | 17 | MCA, middle cerebral, 中大脳動脈, M1, lenticulostriate, レンズ核線条体, limen, 島限, perforated, 有孔質, perforating, 穿通枝 | ★
+- Which ICA segment gives the MCA? Bifurcation landmark
+- Deep territory: names of the perforating arteries
+
+## Posterior circulation: PICA, AICA, SCA and the PCA | 後方循環:小脳の3動脈と後大脳動脈 | 17 | PICA, AICA, SCA, PCA, posterior cerebral, 後大脳動脈, basilar, 脳底動脈, vertebral, 椎骨, labyrinthine, calcarine, fetal, thalamoperforating, 視床穿通 | ★
+- Which cerebellar artery supplies the medulla? Its course and segments
+- Supply of the dentate nucleus
+- PCA terminal branch; perforators; fetal PCA
+
+## Dura mater, cisterns and veins | 硬膜・脳槽・静脈 | 18 | dura, 硬膜, tentorium, テント, falx, 大脳鎌, cistern, 槽, ambient, 迂回, interpeduncular, 脚間, sinus, 静脈洞, vein, 静脈, Galen, 大大脳静脈
+- Structure at the free border of the tentorium
+- Cisterns around the midbrain and what passes in them (one artery, one nerve, one vein)
+- Deep veins of the brain; dural sinuses

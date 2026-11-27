@@ -1,6 +1,6 @@
 # 脳解剖学 単語帳(Signorelli 口頭試験)
 
-Bari大学 BEMC の Neuroanatomy(Signorelli教授)口頭試験用の一問一答アプリ。467枚。
+Bari大学 BEMC の Neuroanatomy(Signorelli教授)口頭試験用の一問一答アプリ。章別 466枚。
 
 - `index.html` — 章別版(講義スライドの9章+概説)
 - `day/index.html` — Day別版(21日間の学習ルートの順。Anki と同じ間隔反復。各Dayの復習は前の全Dayから期限のカード)
