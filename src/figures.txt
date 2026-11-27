@@ -16,6 +16,7 @@
 brainstem-cranial-nerve-nuclei.png | 脳幹の脳神経核の並び(片側)。上が中脳、下が延髄。左端が正中で、右へ行くほど外側。核の種類ごとに色が分かれ、同じ種類の核が縦の列に並ぶ。 | 脳神経核, 疑核, 舌下神経核, 迷走神経背側核, 上唾液核, 下唾液核
 levator-palpebrae-superioris-lateral.jpg | 眼窩を外側(耳の側)から見た図。左が顔の前。緑が上眼瞼挙筋、赤が外眼筋。出典:Kenhub | 上眼瞼挙筋, 眼瞼下垂 | まぶた
 levator-palpebrae-superioris-tarsal-plate.jpg | 上のまぶたを前から見た図。赤が上眼瞼挙筋、黄が上瞼板。出典:TeachMeAnatomy | | まぶた
+levator-muller-eyelid.jpg | 上のまぶたを持ち上げる2つの筋。橙が上眼瞼挙筋(主に持ち上げる筋)、紫が上瞼板筋(Müller 筋、2〜3 mm だけ持ち上げを足す平滑筋で、交感神経が動かす)。 | 上瞼板筋, Müller, Horner, ホルネル | まぶた
 extraocular-muscles.jpg | 外眼筋と担当する神経。橙が動眼神経(CN III)、青が滑車神経(CN IV)、緑が外転神経(CN VI)の担当。 | 外眼筋, 外側直筋, 内側直筋, 上直筋, 下直筋, 上斜筋, 下斜筋
 cn-3-4-6-nuclei-cross-sections.jpg | III・IV・VI の核の高さで脳幹を横に切った断面。上から①中脳(上丘の高さ)、②中脳(下丘の高さ)、③橋の下部。どの図も上が後ろ、下が前。 | 動眼神経核, 滑車神経核, 外転神経核
 horizontal-vertical-gaze.jpg | 水平注視と垂直注視の経路。紫の筒が MLF(内側縦束)で、橋の外転神経核と中脳の動眼神経核の間を縦につなぐ。黒い実線が左を見るとき、黄色の点線が上を見るときの経路。 | MLF, 内側縦束, PPRF, 注視
