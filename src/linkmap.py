@@ -59,6 +59,8 @@ def best_page(card, lesson, index, skip_first=True):
 
 
 MIN_SCORE = 0.06
+# 言葉の重なりでは外れるカードのリンク先を、見出しで決める(2026-11-27、Day 2 の並べ替えのあと)
+PIN = {'CN III が眼窩に入る孔': '動眼神経の通り道', 'Cavernous sinus内でCN VIはどこ?': '外転神経の長い道のり'}
 
 
 def assign(D):
@@ -72,7 +74,12 @@ def assign(D):
         cards = list(d.get('facts') or [])
         for s in d['secs']:
             cards += s['cards']
+        heads = [p['h'] for p in lesson]
         for c in cards:
+            if PIN.get(c['q']) in heads:
+                c['pg'] = PIN[c['q']]
+                stats['linked'] += 1
+                continue
             i, sc = best_page(c, lesson, index)
             if sc >= MIN_SCORE:
                 c['pg'] = lesson[i]['h']
