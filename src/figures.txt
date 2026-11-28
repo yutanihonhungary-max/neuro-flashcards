@@ -30,6 +30,7 @@ spalteholz-cranial-nerve-nuclei-dorsal.jpg | 小脳を取り除いて、脳幹�
 abducens-course-schematic-en.jpg | 外転神経(茶色の線)の通り道の模式図。右の橋から左の眼球まで。 | | 外転神経
 abducens-nerve-course.jpg | 外転神経(黄)の通り道を横から見た図。左が脳幹、右が眼球。①〜⑩の番号の順に進む。 | | 外転神経
 abducens-dorello-canal.jpg | 外転神経とドレロ管。左上が全体の通り道、右がドレロ管の拡大図。海綿静脈洞の中では、III・IV・V1・V2 が洞の壁に沿って並び、VI は洞の中を内頸動脈のすぐそばに沿って進む。 | ドレロ, Dorello, 斜台, 海綿静脈洞, cavernous sinus | 外転神経
+iris-sphincter-dilator-pupillae.jpg | 虹彩の2つの筋。上が虹彩を横に切った断面、下が目を正面から見たところ。瞳孔括約筋(副交感)は瞳孔のふちを輪の形で取り囲み、瞳孔散大筋(交感)は虹彩の中を放射状に広がる。 | 瞳孔括約筋, 瞳孔散大筋, sphincter pupillae, dilator pupillae, 虹彩
 pupillary-light-reflex.jpg | 対光反射の経路。片方の目に光を当てると、両目の瞳孔が縮む。点線は、暗い所で瞳孔が開くときの交感神経の経路。 | 対光反射, 視蓋前域
 accommodation-reflex.jpg | 調節反射(近見反射)の経路。近くの物を見るとき、両目が内に寄り、ピントが近くに合い、瞳孔が縮む。 | 調節反射, 近見反射, 輻輳
 autonomic-nervous-system-overview.jpg | 自律神経の全体図。左(A)が交感神経、右(B)が副交感神経。実線が1本目の神経細胞の線維(節前線維)、点線が乗り換えたあとの2本目の線維(節後線維)。 | 交感神経幹, 上頸神経節, Horner, ホルネル, 節前線維, 節後線維
